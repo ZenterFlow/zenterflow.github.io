@@ -183,7 +183,24 @@
   </button>
 
   <ol>
-    <li><a href="assets/README.md" download>README.md</a></li>
+    <li><a href="assets/README.md" download>README.md</a><details>
+      <summary>README.md (click to expand)</summary>
+      <pre><code class="language-readme">
+        # Reproducible Stack in 5 Steps
+        | Step | Tech        | One-liner Purpose                        |
+        |------|-------------|------------------------------------------|
+        | 1    | NixOS       | Immutable host OS                        |
+        | 2    | Terraform   | Provision K8s cluster                    |
+        | 3    | Docker      | Local dev parity                         |
+        | 4    | Argo CD     | GitOps continuous delivery               |
+        | 5    | OPA Gatekeeper | Policy guardrails                     |
+        
+        ## Quickstart
+        1. `nix develop` – drops you into a shell with Terraform, kubectl, Argo CD CLI.  
+        2. `terraform init && terraform apply` – spins up managed K8s.  
+        3. `kubectl apply -f argocd-app.yaml` – bootstraps Argo CD.  
+        4. `kubectl apply -f constraint-template.yaml` – sample “no latest tag” policy. </code></pre>
+      </details></li>
     <li><a href="assets/flake.nix" download>flake.nix</a><details>
       <summary>flake.nix (click to expand)</summary>
       <pre><code class="language-nix">{
