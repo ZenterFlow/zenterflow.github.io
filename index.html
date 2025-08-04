@@ -205,15 +205,30 @@
 
   <div style="display: flex; align-items: center; gap: 1em;">
     <!-- File Download -->
-    <a href="assets/flake.nix" download style="text-decoration: none; font-weight: bold;">⬇ Download flake.nix</a>
-    
+    <a href="assets/flake.nix" download style="text-decoration: none; font-weight: bold; color: #00d4ff;">
+      ⬇ Download flake.nix
+    </a>
+
     <!-- Expand/Collapse -->
     <details style="flex: 1;">
-      <summary style="cursor: pointer; font-size: 0.9em; color: #007acc;">
+      <summary style="cursor: pointer; font-size: 0.9em; color: #00d4ff;">
         Show Code
       </summary>
-      <pre style="background: #f5f5f5; padding: 10px; border-radius: 6px; margin-top: 8px;">
-<code class="language-nix">{
+
+      <!-- Code Block -->
+      <div style="position: relative; margin-top: 10px;">
+        <button onclick="copyFlakeCode()" style="
+          position: absolute; top: 8px; right: 8px; 
+          background: #333; color: #fff; border: none; 
+          padding: 6px 10px; border-radius: 4px; 
+          font-size: 0.8em; cursor: pointer;">
+          Copy
+        </button>
+        <pre style="
+          background: #1e1e1e; color: #d4d4d4; 
+          padding: 12px; border-radius: 8px; 
+          overflow-x: auto; font-size: 0.9em; margin: 0;">
+<code id="flake-code" class="language-nix">{
   description = "Reproducible Dev Shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -233,10 +248,21 @@
         };
       });
 }</code>
-      </pre>
+        </pre>
+      </div>
     </details>
   </div>
 </li>
+
+<script>
+function copyFlakeCode() {
+  const code = document.getElementById('flake-code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    alert('Code copied to clipboard!');
+  });
+}
+</script>
+
 
     <li><a href="assets/main.tf" download>main.tf</a></li>
     <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
