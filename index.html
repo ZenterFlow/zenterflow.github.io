@@ -63,7 +63,13 @@
    <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>,
    and <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a>)
   fit together to create a platform that deploys itself every time you hit <i>merge</i>.
-  <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">📋 All</button>
+  <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">
+  <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+    <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+  </svg>
+  All
+</button>
 </p>
 
   <!-- rest of your article -->
@@ -149,7 +155,13 @@
   <!-- assets list + copy button -->
   <section id="stack-assets">
     <h3>Grab the configs</h3>
-    <button onclick="copyAssets()">CC Copy URLs</button>
+    <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">
+  <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+    <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+  </svg>
+  All
+</button>
     <ol>
       <li><a href="assets/README.md" download>README.md</a></li>
       <li><a href="assets/flake.nix" download>flake.nix</a></li>
