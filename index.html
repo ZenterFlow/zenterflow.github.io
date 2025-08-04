@@ -61,25 +61,25 @@
   <h2>5. A Day in the Life of a Change</h2>
   <p>Let’s add a new feature: “Show real-time in-game leaderboards”.</p>
   <ol>
-    <li>Code</li>
+    <li><strong>Code</strong></li>
       <ul>
         <li>Write the leaderboard service in Go.</li>
         <li>Add a DSPy pipeline to pre-aggregate stats.</li>
         <li>Commit everything to git.</li>
       </ul>
-    <li>CI Gate</li>
+    <li><strong>CI Gate</strong></li>
       <ul>
         <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
         <li>Terraform dry-run shows a new Redis cache.</li>
         <li>Tests pass → image is signed & pushed.</li>
       </ul>
-    <li>GitOps Sync</li>
+    <li><strong>GitOps Sync</strong></li>
       <ul>
         <li>Argo CD detects the new commit hash.</li>
         <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
         <li>OPA policy ensures the service can’t talk to the payments DB.</li>
       </ul>
-    <li>Observe</li>
+    <li><strong>Observe</strong></li>
       <ul>
         <li>Prometheus sees p95 latency drop.</li>
         <li>Grafana dashboard auto-updates.</li>
