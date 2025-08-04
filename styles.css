@@ -121,3 +121,6 @@ pre {
 .copy-btn:hover {
   background: #444;
 }
+.tools-table {
+  border-collapse: collapse;
+}
