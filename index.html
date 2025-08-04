@@ -319,12 +319,16 @@
         </details>
       </li>
       <li>
-        <strong>GitOps Sync</strong>
+        <details open>
+        <summary><strong>GitOps Sync</strong></summary>
+        <p>
         <ul>
           <li>Argo CD detects the new commit hash.</li>
           <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
           <li>OPA policy ensures the service can’t talk to the payments DB.</li>
         </ul>
+        </p>
+        </details>
       </li>
       <li>
         <strong>Observe</strong>
