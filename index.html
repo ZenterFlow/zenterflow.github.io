@@ -201,29 +201,43 @@
         3. `kubectl apply -f argocd-app.yaml` – bootstraps Argo CD.  
         4. `kubectl apply -f constraint-template.yaml` – sample “no latest tag” policy. </code></pre>
       </details></li>
-    <li><a href="assets/flake.nix" download>flake.nix</a><details>
-      <summary>flake.nix (click to expand)</summary>
-      <pre><code class="language-nix">{
-      description = "Reproducible Dev Shell";
+    <li style="margin-bottom: 1em; list-style: none;">
+
+  <div style="display: flex; align-items: center; gap: 1em;">
+    <!-- File Download -->
+    <a href="assets/flake.nix" download style="text-decoration: none; font-weight: bold;">⬇ Download flake.nix</a>
     
-      inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-      inputs.flake-utils.url = "github:numtide/flake-utils";
-    
-      outputs = { self, nixpkgs, flake-utils }:
-        flake-utils.lib.eachDefaultSystem (system:
-          let pkgs = nixpkgs.legacyPackages.${system};
-          in {
-            devShells.default = pkgs.mkShell {
-              packages = with pkgs; [
-                terraform
-                kubectl
-                argocd
-                docker
-              ];
-            };
-          });
-      }</code></pre>
-      </details></li>
+    <!-- Expand/Collapse -->
+    <details style="flex: 1;">
+      <summary style="cursor: pointer; font-size: 0.9em; color: #007acc;">
+        Show Code
+      </summary>
+      <pre style="background: #f5f5f5; padding: 10px; border-radius: 6px; margin-top: 8px;">
+<code class="language-nix">{
+  description = "Reproducible Dev Shell";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            terraform
+            kubectl
+            argocd
+            docker
+          ];
+        };
+      });
+}</code>
+      </pre>
+    </details>
+  </div>
+</li>
+
     <li><a href="assets/main.tf" download>main.tf</a></li>
     <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
     <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a></li>
