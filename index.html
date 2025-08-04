@@ -117,238 +117,245 @@
   <h2>4. How the Characters relate to Each Other</h2>
   <p>Table: A Declarative Software Architecture Workflow</p>
 
-  <!--  SVG: zoomable without JS  -->
-  <!-- Fully-zoomable SVG (no JS) -->
-<svg class="infra-svg"
-     viewBox="0 0 2472 872"
-     preserveAspectRatio="xMidYMid meet"
-     xmlns="http://www.w3.org/2000/svg"
-     aria-labelledby="title">
-  <title id="title">Declarative GitOps workflow (Git → CI → Argo CD → K8s → Observability)</title>
+<!-- ========= Zoomable, vector-perfect flowchart ========= -->
+<section id="flowchart-wrapper" style="position:relative">
+  <!-- Zoom controls -->
+  <div id="zoomCtl" style="margin:.25rem 0">
+    <button id="zoomIn"  title="Zoom in">🔍+</button>
+    <button id="zoomOut" title="Zoom out">🔍-</button>
+    <button id="zoomFit" title="Fit to screen">⤧</button>
+  </div>
 
-  <!-- ----------  Styles  ---------- -->
-  <style>
-    /* global */
-    .infra-svg{
-      width:100%;
-      max-height:70vh;
-      cursor:zoom-in;
-      background:#111827;
-      border:1px solid #374151;
-      border-radius:6px;
-      touch-action:manipulation;   /* allow pinch-zoom on touch */
+  <!-- The SVG -->
+  <svg id="flowchart"
+       class="infra-svg"
+       viewBox="0 0 2472 872"
+       preserveAspectRatio="xMidYMid meet"
+       xmlns="http://www.w3.org/2000/svg"
+       aria-labelledby="ftitle">
+    <title id="ftitle">Declarative GitOps workflow (full fidelity)</title>
+
+    <!-- tiny CSS inside SVG for portability -->
+    <style>
+      .infra-svg{
+        width:100%;
+        max-height:70vh;
+        background:#111827;
+        border:1px solid #374151;
+        border-radius:6px;
+        cursor:grab;
+        touch-action:manipulation;
+      }
+      .node rect{
+        fill:#111827;
+        stroke:#60a5fa;
+        stroke-width:2;
+      }
+      .node text{
+        fill:#fff;
+        font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+        text-anchor:middle;
+        dominant-baseline:middle;
+      }
+      .edge{
+        fill:none;
+        stroke:#00ff00;
+        stroke-width:2;
+      }
+      .edge-label{
+        fill:#fff;
+        font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+        text-anchor:middle;
+      }
+      #zoomCtl button{
+        background:#60a5fa;
+        color:#111827;
+        border:none;
+        margin-right:.25rem;
+        padding:.25rem .5rem;
+        border-radius:4px;
+        cursor:pointer;
+      }
+      #zoomCtl button:active{transform:scale(.95)}
+    </style>
+
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0L10 5L0 10z" fill="#00ff00"/>
+      </marker>
+    </defs>
+
+    <!-- ======  NODES  ====== -->
+    <!-- 1st row -->
+    <g class="node" transform="translate(2095 41)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Git Repository: single source of truth</text>
+    </g>
+    <g class="node" transform="translate(1301 199)">
+      <rect x="-110" y="-22.5" width="220" height="45" rx="6"/>
+      <text>NixOS host specs: flake.nix</text>
+    </g>
+    <g class="node" transform="translate(1559 199)">
+      <rect x="-98" y="-22.5" width="196" height="45" rx="6"/>
+      <text>Terraform infra: main.tf</text>
+    </g>
+    <g class="node" transform="translate(1823 199)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Dockerfiles &amp; image lockfiles</text>
+    </g>
+    <g class="node" transform="translate(2105 199)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Argo CD Apps &amp; Projects: YAML</text>
+    </g>
+    <g class="node" transform="translate(2367 199)">
+      <rect x="-96" y="-22.5" width="192" height="45" rx="6"/>
+      <text>DSPy pipelines: Python</text>
+    </g>
+
+    <!-- 2nd row -->
+    <g class="node" transform="translate(1026 357)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>CI Pipeline: GitHub/GitLab Actions</text>
+    </g>
+
+    <!-- 3rd row -->
+    <g class="node" transform="translate(1026 515)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Argo CD: Declarative Continuous Delivery</text>
+    </g>
+    <g class="node" transform="translate(984 515)">
+      <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+      <text>Namespace A</text>
+    </g>
+    <g class="node" transform="translate(1204 515)">
+      <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+      <text>Namespace B</text>
+    </g>
+    <g class="node" transform="translate(1424 515)">
+      <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+      <text>Namespace C</text>
+    </g>
+
+    <!-- 4th row -->
+    <g class="node" transform="translate(757 673)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Kubernetes Cluster: NixOS nodes</text>
+    </g>
+
+    <!-- 5th row (infra add-ons) -->
+    <g class="node" transform="translate(631 831)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>MetalLB / Cilium / cert-manager</text>
+    </g>
+    <g class="node" transform="translate(908 831)">
+      <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
+      <text>External-DNS / CSI storage</text>
+    </g>
+    <g class="node" transform="translate(1141 831)">
+      <rect x="-72" y="-22.5" width="144" height="45" rx="6"/>
+      <text>HPA / VPA / PDB</text>
+    </g>
+    <g class="node" transform="translate(1379 831)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>PodSecurityPolicies / OPA Gatekeeper</text>
+    </g>
+    <g class="node" transform="translate(1616 831)">
+      <rect x="-71" y="-22.5" width="142" height="45" rx="6"/>
+      <text>DSPy Jobs: Cron</text>
+    </g>
+    <g class="node" transform="translate(1804 831)">
+      <rect x="-66" y="-22.5" width="133" height="45" rx="6"/>
+      <text>Game Services</text>
+    </g>
+
+    <!-- Observability leaf nodes -->
+    <g class="node" transform="translate(124 990)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Prometheus → Grafana dashboards</text>
+    </g>
+    <g class="node" transform="translate(375 990)">
+      <rect x="-85" y="-22.5" width="171" height="45" rx="6"/>
+      <text>Loki / Tempo traces</text>
+    </g>
+    <g class="node" transform="translate(622 990)">
+      <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
+      <text>Alertmanager → PagerDuty</text>
+    </g>
+    <g class="node" transform="translate(899 990)">
+      <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+      <text>Policy-as-code: OPA / Kyverno</text>
+    </g>
+
+    <!-- ======  EDGES  ====== -->
+    <!-- Git → CI -->
+    <path d="M1979 74L1026 166" class="edge" marker-end="url(#ah)"/>
+    <text x="1502" y="120" class="edge-label">Pull-Request → Review → Merge</text>
+
+    <!-- CI → Argo CD -->
+    <path d="M1026 232L1026 324" class="edge" marker-end="url(#ah)"/>
+    <text x="1046" y="278" class="edge-label">Promotes validated artefacts</text>
+
+    <!-- Argo CD → K8s -->
+    <path d="M1026 390L757 482" class="edge" marker-end="url(#ah)"/>
+    <text x="891" y="445" class="edge-label">K8s manifests: Kustomize/Helm</text>
+
+    <!-- Argo CD → Namespaces -->
+    <path d="M984 423L984 482" class="edge" marker-end="url(#ah)"/>
+    <path d="M1204 423L1204 482" class="edge" marker-end="url(#ah)"/>
+    <path d="M1424 423L1424 482" class="edge" marker-end="url(#ah)"/>
+
+    <!-- K8s → Add-ons -->
+    <path d="M631 548L631 640" class="edge" marker-end="url(#ah)"/>
+    <path d="M908 548L908 640" class="edge" marker-end="url(#ah)"/>
+    <path d="M1141 548L1141 640" class="edge" marker-end="url(#ah)"/>
+    <path d="M1379 548L1379 640" class="edge" marker-end="url(#ah)"/>
+    <path d="M1616 548L1616 640" class="edge" marker-end="url(#ah)"/>
+    <path d="M1804 548L1804 640" class="edge" marker-end="url(#ah)"/>
+
+    <!-- K8s → Observability -->
+    <path d="M757 708L373 800" class="edge" marker-end="url(#ah)"/>
+
+    <!-- Observability → leaf nodes -->
+    <path d="M124 865L124 957" class="edge" marker-end="url(#ah)"/>
+    <path d="M375 865L375 957" class="edge" marker-end="url(#ah)"/>
+    <path d="M622 865L622 957" class="edge" marker-end="url(#ah)"/>
+    <path d="M899 865L899 957" class="edge" marker-end="url(#ah)"/>
+
+    <!-- Git → side nodes -->
+    <path d="M1979 90L1301 166" class="edge" marker-end="url(#ah)"/>
+    <path d="M1979 105L1559 166" class="edge" marker-end="url(#ah)"/>
+    <path d="M1982 120L1823 166" class="edge" marker-end="url(#ah)"/>
+    <path d="M2100 120L2105 166" class="edge" marker-end="url(#ah)"/>
+    <path d="M2209 120L2367 166" class="edge" marker-end="url(#ah)"/>
+  </svg>
+
+  <!-- ========= Tiny JS for zoom/pan ========= -->
+  <script>
+  (() => {
+    const svg   = document.getElementById('flowchart');
+    const box   = svg.viewBox.baseVal;
+    let scale = 1, tx = 0, ty = 0;
+    function update() {
+      svg.style.transformOrigin = '0 0';
+      svg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
     }
+    document.getElementById('zoomIn').onclick  = () => { scale *= 1.2; update(); };
+    document.getElementById('zoomOut').onclick = () => { scale /= 1.2; update(); };
+    document.getElementById('zoomFit').onclick = () => { scale = 1; tx = ty = 0; update(); };
 
-    /* nodes */
-    .node rect{
-      fill:#111827;
-      stroke:#60a5fa;
-      stroke-width:2;
-    }
-    .node text{
-      fill:#fff;
-      font-size:14px;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-      text-anchor:middle;
-      dominant-baseline:middle;
-    }
-
-    /* edges */
-    .edge{
-      fill:none;
-      stroke:#00ff00;
-      stroke-width:2;
-    }
-    .edge-label{
-      fill:#fff;
-      font-size:12px;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-      text-anchor:middle;
-    }
-
-    /* arrowheads */
-    .arrow{
-      fill:#00ff00;
-    }
-  </style>
-
-  <!-- ----------  Arrow marker  ---------- -->
-  <defs>
-    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto" class="arrow">
-      <path d="M0 0L10 5L0 10z"/>
-    </marker>
-  </defs>
-
-  <!-- ----------  Nodes  ---------- -->
-  <!-- Git -->
-  <g class="node" transform="translate(2095 41)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Git Repository: single source of truth</text>
-  </g>
-
-  <!-- CI -->
-  <g class="node" transform="translate(1026 199)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>CI Pipeline: GitHub/GitLab Actions</text>
-  </g>
-
-  <!-- Argo CD -->
-  <g class="node" transform="translate(1026 357)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Argo CD: Declarative Continuous Delivery</text>
-  </g>
-
-  <!-- K8s -->
-  <g class="node" transform="translate(757 515)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Kubernetes Cluster: NixOS nodes</text>
-  </g>
-
-  <!-- Observability -->
-  <g class="node" transform="translate(373 673)">
-    <rect x="-92" y="-22.5" width="184" height="45" rx="6"/>
-    <text>Observability &amp; Policy</text>
-  </g>
-
-  <!-- Git → NixOS -->
-  <g class="node" transform="translate(1301 199)">
-    <rect x="-110" y="-22.5" width="220" height="45" rx="6"/>
-    <text>NixOS host specs: flake.nix</text>
-  </g>
-
-  <!-- Git → Terraform -->
-  <g class="node" transform="translate(1559 199)">
-    <rect x="-98" y="-22.5" width="196" height="45" rx="6"/>
-    <text>Terraform infra: main.tf</text>
-  </g>
-
-  <!-- Git → Dockerfile -->
-  <g class="node" transform="translate(1823 199)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Dockerfiles &amp; image lockfiles</text>
-  </g>
-
-  <!-- Git → Argo Apps -->
-  <g class="node" transform="translate(2105 199)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Argo CD Apps &amp; Projects: YAML</text>
-  </g>
-
-  <!-- Git → DSPy -->
-  <g class="node" transform="translate(2367 199)">
-    <rect x="-96" y="-22.5" width="192" height="45" rx="6"/>
-    <text>DSPy pipelines: Python</text>
-  </g>
-
-  <!-- Namespaces -->
-  <g class="node" transform="translate(984 515)">
-    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
-    <text>Namespace A</text>
-  </g>
-  <g class="node" transform="translate(1204 515)">
-    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
-    <text>Namespace B</text>
-  </g>
-  <g class="node" transform="translate(1424 515)">
-    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
-    <text>Namespace C</text>
-  </g>
-
-  <!-- Add-ons -->
-  <g class="node" transform="translate(631 673)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>MetalLB / Cilium / cert-manager</text>
-  </g>
-  <g class="node" transform="translate(908 673)">
-    <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
-    <text>External-DNS / CSI storage</text>
-  </g>
-  <g class="node" transform="translate(1141 673)">
-    <rect x="-72" y="-22.5" width="144" height="45" rx="6"/>
-    <text>HPA / VPA / PDB</text>
-  </g>
-  <g class="node" transform="translate(1379 673)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>PodSecurityPolicies / OPA Gatekeeper</text>
-  </g>
-  <g class="node" transform="translate(1616 673)">
-    <rect x="-71" y="-22.5" width="142" height="45" rx="6"/>
-    <text>DSPy Jobs: Cron</text>
-  </g>
-  <g class="node" transform="translate(1804 673)">
-    <rect x="-66" y="-22.5" width="133" height="45" rx="6"/>
-    <text>Game Services</text>
-  </g>
-
-  <!-- Observability leaf nodes -->
-  <g class="node" transform="translate(124 831)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Prometheus → Grafana dashboards</text>
-  </g>
-  <g class="node" transform="translate(375 831)">
-    <rect x="-85" y="-22.5" width="171" height="45" rx="6"/>
-    <text>Loki / Tempo traces</text>
-  </g>
-  <g class="node" transform="translate(622 831)">
-    <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
-    <text>Alertmanager → PagerDuty</text>
-  </g>
-  <g class="node" transform="translate(899 831)">
-    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
-    <text>Policy-as-code: OPA / Kyverno</text>
-  </g>
-
-  <!-- ----------  Edges  ---------- -->
-  <!-- Git → CI -->
-  <path d="M1979 74L1026 166" class="edge" marker-end="url(#arrowhead)"/>
-  <text x="1502" y="120" class="edge-label">Pull-Request → Review → Merge</text>
-
-  <!-- CI → Argo CD -->
-  <path d="M1026 232L1026 324" class="edge" marker-end="url(#arrowhead)"/>
-  <text x="1046" y="278" class="edge-label">Promotes validated artefacts</text>
-
-  <!-- Argo CD → K8s -->
-  <path d="M1026 390L757 482" class="edge" marker-end="url(#arrowhead)"/>
-  <text x="891" y="445" class="edge-label">Kubernetes manifests: Kustomize/Helm</text>
-
-  <!-- K8s → Observability -->
-  <path d="M757 548L373 640" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Git → NixOS -->
-  <path d="M1979 90L1301 166" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Git → Terraform -->
-  <path d="M1979 105L1559 166" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Git → Dockerfile -->
-  <path d="M1982 120L1823 166" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Git → Argo Apps -->
-  <path d="M2100 120L2105 166" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Git → DSPy -->
-  <path d="M2209 120L2367 166" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Argo CD → Namespaces -->
-  <path d="M984 423L984 482" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1204 423L1204 482" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1424 423L1424 482" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- K8s → Add-ons -->
-  <path d="M631 548L631 640" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M908 548L908 640" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1141 548L1141 640" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1379 548L1379 640" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1616 548L1616 640" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M1804 548L1804 640" class="edge" marker-end="url(#arrowhead)"/>
-
-  <!-- Observability → leaf nodes -->
-  <path d="M124 708L124 800" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M375 708L375 800" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M622 708L622 800" class="edge" marker-end="url(#arrowhead)"/>
-  <path d="M899 708L899 800" class="edge" marker-end="url(#arrowhead)"/>
-</svg>
+    // mouse-drag pan
+    let dragging = false, sx, sy;
+    svg.addEventListener('mousedown', e => { dragging = true; sx = e.clientX - tx; sy = e.clientY - ty; });
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      tx = e.clientX - sx; ty = e.clientY - sy;
+      update();
+    });
+    window.addEventListener('mouseup', () => dragging = false);
+  })();
+  </script>
+</section>
   <hr>
 
   <h2>5. A Day in the Life of a Change</h2>
