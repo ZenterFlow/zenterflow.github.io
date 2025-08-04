@@ -199,15 +199,15 @@
   }
   document.getElementById('copyAllTools').addEventListener('click', () => {
     const urls = [
-      'https://git-scm.com/',
-      'https://nixos.org/',
-      'https://docker.com/',
-      'https://developer.hashicorp.com/terraform/',
-      'https://kubernetes.io/',
-      'https://argo-cd.readthedocs.io/en/stable/',
-      'https://dspy.ai/',
-      'https://www.openpolicyagent.org/'
-    ].join('\n');
+  'https://git-scm.com/',
+  'https://nixos.org/',
+  'https://docker.com/',
+  'https://developer.hashicorp.com/terraform/',
+  'https://kubernetes.io/',
+  'https://argo-cd.readthedocs.io/en/stable/',
+  'https://dspy.ai/',
+  'https://www.openpolicyagent.org/'
+].join('\n');
     navigator.clipboard.writeText(urls).then(() => {
       const btn = document.getElementById('copyAllTools');
       btn.textContent = '✅ Copied!';
