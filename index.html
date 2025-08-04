@@ -182,53 +182,46 @@
     Copy URLs
   </button>
 
-  <ol>
-    <li><a href="assets/README.md" download>README.md</a><details>
-      <summary>README.md (click to expand)</summary>
-      <pre><code class="language-readme">
-        # Reproducible Stack in 5 Steps
-        | Step | Tech        | One-liner Purpose                        |
-        |------|-------------|------------------------------------------|
-        | 1    | NixOS       | Immutable host OS                        |
-        | 2    | Terraform   | Provision K8s cluster                    |
-        | 3    | Docker      | Local dev parity                         |
-        | 4    | Argo CD     | GitOps continuous delivery               |
-        | 5    | OPA Gatekeeper | Policy guardrails                     |
-        
-        ## Quickstart
-        1. `nix develop` – drops you into a shell with Terraform, kubectl, Argo CD CLI.  
-        2. `terraform init && terraform apply` – spins up managed K8s.  
-        3. `kubectl apply -f argocd-app.yaml` – bootstraps Argo CD.  
-        4. `kubectl apply -f constraint-template.yaml` – sample “no latest tag” policy. </code></pre>
-      </details></li>
-    <li style="margin-bottom: 1em; list-style: none;">
+  <ul style="padding-left: 0;">
 
-  <div style="display: flex; align-items: center; gap: 1em;">
-    <!-- File Download -->
-    <a href="assets/flake.nix" download style="text-decoration: none; font-weight: bold; color: #00d4ff;">
-      ⬇ Download flake.nix
-    </a>
+  <!-- README.md -->
+  <li class="file-block">
+    <div class="file-header">
+      <a href="assets/README.md" download>⬇ Download README.md</a>
+      <details>
+        <summary>Show Code</summary>
+        <div class="code-container">
+          <button class="copy-btn" data-target="file-1">Copy</button>
+          <pre><code id="file-1" class="language-markdown"># Reproducible Stack in 5 Steps
 
-    <!-- Expand/Collapse -->
-    <details style="flex: 1;">
-      <summary style="cursor: pointer; font-size: 0.9em; color: #00d4ff;">
-        Show Code
-      </summary>
+| Step | Tech        | One-liner Purpose                        |
+|------|-------------|------------------------------------------|
+| 1    | NixOS       | Immutable host OS                        |
+| 2    | Terraform   | Provision K8s cluster                    |
+| 3    | Docker      | Local dev parity                         |
+| 4    | Argo CD     | GitOps continuous delivery               |
+| 5    | OPA Gatekeeper | Policy guardrails                     |
 
-      <!-- Code Block -->
-      <div style="position: relative; margin-top: 10px;">
-        <button onclick="copyFlakeCode()" style="
-          position: absolute; top: 8px; right: 8px; 
-          background: #333; color: #fff; border: none; 
-          padding: 6px 10px; border-radius: 4px; 
-          font-size: 0.8em; cursor: pointer;">
-          Copy
-        </button>
-        <pre style="
-          background: #1e1e1e; color: #d4d4d4; 
-          padding: 12px; border-radius: 8px; 
-          overflow-x: auto; font-size: 0.9em; margin: 0;">
-<code id="flake-code" class="language-nix">{
+## Quickstart
+1. `nix develop` – drops you into a shell with Terraform, kubectl, Argo CD CLI.  
+2. `terraform init && terraform apply` – spins up managed K8s.  
+3. `kubectl apply -f argocd-app.yaml` – bootstraps Argo CD.  
+4. `kubectl apply -f constraint-template.yaml` – sample “no latest tag” policy.  
+</code></pre>
+        </div>
+      </details>
+    </div>
+  </li>
+
+  <!-- flake.nix -->
+  <li class="file-block">
+    <div class="file-header">
+      <a href="assets/flake.nix" download>⬇ Download flake.nix</a>
+      <details>
+        <summary>Show Code</summary>
+        <div class="code-container">
+          <button class="copy-btn" data-target="file-2">Copy</button>
+          <pre><code id="file-2" class="language-nix">{
   description = "Reproducible Dev Shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -247,27 +240,125 @@
           ];
         };
       });
-}</code>
-        </pre>
-      </div>
-    </details>
-  </div>
-</li>
+}</code></pre>
+        </div>
+      </details>
+    </div>
+  </li>
+
+  <!-- main.tf -->
+  <li class="file-block">
+    <div class="file-header">
+      <a href="assets/main.tf" download>⬇ Download main.tf</a>
+      <details>
+        <summary>Show Code</summary>
+        <div class="code-container">
+          <button class="copy-btn" data-target="file-3">Copy</button>
+          <pre><code id="file-3" class="language-hcl">provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+resource "kubernetes_namespace" "example" {
+  metadata {
+    name = "example-namespace"
+  }
+}</code></pre>
+        </div>
+      </details>
+    </div>
+  </li>
+
+  <!-- argocd-app.yaml -->
+  <li class="file-block">
+    <div class="file-header">
+      <a href="assets/argocd-app.yaml" download>⬇ Download argocd-app.yaml</a>
+      <details>
+        <summary>Show Code</summary>
+        <div class="code-container">
+          <button class="copy-btn" data-target="file-4">Copy</button>
+          <pre><code id="file-4" class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: example-app
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/example/repo.git
+    path: manifests
+  project: default
+  syncPolicy:
+    automated: {}</code></pre>
+        </div>
+      </details>
+    </div>
+  </li>
+
+  <!-- constraint-template.yaml -->
+  <li class="file-block">
+    <div class="file-header">
+      <a href="assets/constraint-template.yaml" download>⬇ Download constraint-template.yaml</a>
+      <details>
+        <summary>Show Code</summary>
+        <div class="code-container">
+          <button class="copy-btn" data-target="file-5">Copy</button>
+          <pre><code id="file-5" class="language-yaml">apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedrepos
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedRepos
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedrepos
+
+        violation[{"msg": msg}] {
+          input.review.object.spec.containers[_].image != "allowed/repo"
+          msg := "Image repository is not allowed"
+        }</code></pre>
+        </div>
+      </details>
+    </div>
+  </li>
+
+</ul>
+
+<style>
+ul { list-style: none; margin: 0; }
+.file-block { margin-bottom: 1.5em; }
+.file-header { display: flex; flex-direction: column; gap: 0.5em; }
+.file-header a { color: #00d4ff; text-decoration: none; font-weight: bold; }
+details summary { cursor: pointer; color: #00d4ff; font-size: 0.9em; }
+.code-container { position: relative; margin-top: 8px; }
+pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0; font-size: 0.9em; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: #333; color: #fff; border: none;
+  padding: 6px 10px; border-radius: 4px;
+  font-size: 0.8em; cursor: pointer;
+}
+.copy-btn:hover { background: #444; }
+</style>
 
 <script>
-function copyFlakeCode() {
-  const code = document.getElementById('flake-code').innerText;
-  navigator.clipboard.writeText(code).then(() => {
-    alert('Code copied to clipboard!');
-  });
-}
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('copy-btn')) {
+    const targetId = e.target.getAttribute('data-target');
+    const code = document.getElementById(targetId).innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      e.target.textContent = 'Copied!';
+      setTimeout(() => e.target.textContent = 'Copy', 1500);
+    });
+  }
+});
 </script>
 
-
-    <li><a href="assets/main.tf" download>main.tf</a></li>
-    <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
-    <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a></li>
-  </ol>
 </section>
 
   <h2>7. The Bigger Picture</h2>
