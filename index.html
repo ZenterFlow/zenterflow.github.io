@@ -118,157 +118,237 @@
   <p>Table: A Declarative Software Architecture Workflow</p>
 
   <!--  SVG: zoomable without JS  -->
-  <svg class="infra-svg" viewBox="0 0 2472 872" preserveAspectRatio="xMidYMid meet"
-       xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svgTitle">
-    <title id="svgTitle">Declarative GitOps workflow from Git to running services</title>
+  <!-- Fully-zoomable SVG (no JS) -->
+<svg class="infra-svg"
+     viewBox="0 0 2472 872"
+     preserveAspectRatio="xMidYMid meet"
+     xmlns="http://www.w3.org/2000/svg"
+     aria-labelledby="title">
+  <title id="title">Declarative GitOps workflow (Git → CI → Argo CD → K8s → Observability)</title>
 
-    <!-- Gradient for node strokes -->
-    <defs>
-      <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%"  stop-color="#60a5fa"/>
-        <stop offset="100%" stop-color="#00ff00"/>
-      </linearGradient>
-    </defs>
+  <!-- ----------  Styles  ---------- -->
+  <style>
+    /* global */
+    .infra-svg{
+      width:100%;
+      max-height:70vh;
+      cursor:zoom-in;
+      background:#111827;
+      border:1px solid #374151;
+      border-radius:6px;
+      touch-action:manipulation;   /* allow pinch-zoom on touch */
+    }
 
-    <!-- ========== Nodes ========== -->
-    <!-- Git -->
-    <g id="git">
-      <rect x="1979" y="8" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
-      <text x="2095" y="41" text-anchor="middle" fill="#fff" font-size="14">Git Repository: single source of truth</text>
-    </g>
+    /* nodes */
+    .node rect{
+      fill:#111827;
+      stroke:#60a5fa;
+      stroke-width:2;
+    }
+    .node text{
+      fill:#fff;
+      font-size:14px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+      text-anchor:middle;
+      dominant-baseline:middle;
+    }
 
-    <!-- CI -->
-    <g id="ci">
-      <rect x="910" y="166" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
-      <text x="1026" y="199" text-anchor="middle" fill="#fff" font-size="14">CI Pipeline: GitHub/GitLab Actions</text>
-    </g>
+    /* edges */
+    .edge{
+      fill:none;
+      stroke:#00ff00;
+      stroke-width:2;
+    }
+    .edge-label{
+      fill:#fff;
+      font-size:12px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+      text-anchor:middle;
+    }
 
-    <!-- Argo CD -->
-    <g id="argocd">
-      <rect x="910" y="324" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
-      <text x="1026" y="357" text-anchor="middle" fill="#fff" font-size="14">Argo CD: Declarative Continuous Delivery</text>
-    </g>
+    /* arrowheads */
+    .arrow{
+      fill:#00ff00;
+    }
+  </style>
 
-    <!-- K8s -->
-    <g id="k8s">
-      <rect x="641" y="482" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
-      <text x="757" y="515" text-anchor="middle" fill="#fff" font-size="14">Kubernetes Cluster: NixOS nodes</text>
-    </g>
+  <!-- ----------  Arrow marker  ---------- -->
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto" class="arrow">
+      <path d="M0 0L10 5L0 10z"/>
+    </marker>
+  </defs>
 
-    <!-- Observability -->
-    <g id="obs">
-      <rect x="257" y="640" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
-      <text x="373" y="673" text-anchor="middle" fill="#fff" font-size="14">Observability &amp; Policy</text>
-    </g>
+  <!-- ----------  Nodes  ---------- -->
+  <!-- Git -->
+  <g class="node" transform="translate(2095 41)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Git Repository: single source of truth</text>
+  </g>
 
-    <!-- ========== Edges ========== -->
-    <defs>
-      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
-              markerWidth="6" markerHeight="6" orient="auto">
-        <path d="M0 0L10 5L0 10z" fill="#00ff00"/>
-      </marker>
-    </defs>
+  <!-- CI -->
+  <g class="node" transform="translate(1026 199)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>CI Pipeline: GitHub/GitLab Actions</text>
+  </g>
 
-    <!-- Git → CI -->
-    <path d="M1979 41L1026 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1502" y="85" fill="#fff" font-size="12" text-anchor="middle">Pull-Request → Review → Merge</text>
+  <!-- Argo CD -->
+  <g class="node" transform="translate(1026 357)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Argo CD: Declarative Continuous Delivery</text>
+  </g>
 
-    <!-- CI → Argo CD -->
-    <path d="M1026 232L1026 324" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1046" y="278" fill="#fff" font-size="12">Promotes validated artefacts</text>
+  <!-- K8s -->
+  <g class="node" transform="translate(757 515)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Kubernetes Cluster: NixOS nodes</text>
+  </g>
 
-    <!-- Argo CD → K8s -->
-    <path d="M1026 390L757 482" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="891" y="445" fill="#fff" font-size="12">Kustomize/Helm manifests</text>
+  <!-- Observability -->
+  <g class="node" transform="translate(373 673)">
+    <rect x="-92" y="-22.5" width="184" height="45" rx="6"/>
+    <text>Observability &amp; Policy</text>
+  </g>
 
-    <!-- K8s → Observability -->
-    <path d="M641 548L373 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
+  <!-- Git → NixOS -->
+  <g class="node" transform="translate(1301 199)">
+    <rect x="-110" y="-22.5" width="220" height="45" rx="6"/>
+    <text>NixOS host specs: flake.nix</text>
+  </g>
 
-    <!-- Git → NixOS flake -->
-    <path d="M1979 60L1301 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1640" y="95" fill="#fff" font-size="12">NixOS host specs: flake.nix</text>
+  <!-- Git → Terraform -->
+  <g class="node" transform="translate(1559 199)">
+    <rect x="-98" y="-22.5" width="196" height="45" rx="6"/>
+    <text>Terraform infra: main.tf</text>
+  </g>
 
-    <!-- Git → Terraform -->
-    <path d="M1979 75L1559 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1769" y="95" fill="#fff" font-size="12">Terraform infra: main.tf</text>
+  <!-- Git → Dockerfile -->
+  <g class="node" transform="translate(1823 199)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Dockerfiles &amp; image lockfiles</text>
+  </g>
 
-    <!-- Git → Dockerfile -->
-    <path d="M1982 90L1823 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1902" y="105" fill="#fff" font-size="12">Dockerfiles &amp; image lockfiles</text>
+  <!-- Git → Argo Apps -->
+  <g class="node" transform="translate(2105 199)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Argo CD Apps &amp; Projects: YAML</text>
+  </g>
 
-    <!-- Git → Argo Apps -->
-    <path d="M2100 90L2105 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="2105" y="105" fill="#fff" font-size="12">Argo CD Apps &amp; Projects: YAML</text>
+  <!-- Git → DSPy -->
+  <g class="node" transform="translate(2367 199)">
+    <rect x="-96" y="-22.5" width="192" height="45" rx="6"/>
+    <text>DSPy pipelines: Python</text>
+  </g>
 
-    <!-- Git → DSPy -->
-    <path d="M2209 90L2367 120" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="2288" y="105" fill="#fff" font-size="12">DSPy pipelines: Python</text>
+  <!-- Namespaces -->
+  <g class="node" transform="translate(984 515)">
+    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+    <text>Namespace A</text>
+  </g>
+  <g class="node" transform="translate(1204 515)">
+    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+    <text>Namespace B</text>
+  </g>
+  <g class="node" transform="translate(1424 515)">
+    <rect x="-61" y="-22.5" width="122" height="45" rx="6"/>
+    <text>Namespace C</text>
+  </g>
 
-    <!-- Argo CD → Namespaces -->
-    <path d="M984 423L984 482" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1004" y="452" fill="#fff" font-size="11">Namespace A</text>
+  <!-- Add-ons -->
+  <g class="node" transform="translate(631 673)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>MetalLB / Cilium / cert-manager</text>
+  </g>
+  <g class="node" transform="translate(908 673)">
+    <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
+    <text>External-DNS / CSI storage</text>
+  </g>
+  <g class="node" transform="translate(1141 673)">
+    <rect x="-72" y="-22.5" width="144" height="45" rx="6"/>
+    <text>HPA / VPA / PDB</text>
+  </g>
+  <g class="node" transform="translate(1379 673)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>PodSecurityPolicies / OPA Gatekeeper</text>
+  </g>
+  <g class="node" transform="translate(1616 673)">
+    <rect x="-71" y="-22.5" width="142" height="45" rx="6"/>
+    <text>DSPy Jobs: Cron</text>
+  </g>
+  <g class="node" transform="translate(1804 673)">
+    <rect x="-66" y="-22.5" width="133" height="45" rx="6"/>
+    <text>Game Services</text>
+  </g>
 
-    <path d="M1204 423L1204 482" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1224" y="452" fill="#fff" font-size="11">Namespace B</text>
+  <!-- Observability leaf nodes -->
+  <g class="node" transform="translate(124 831)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Prometheus → Grafana dashboards</text>
+  </g>
+  <g class="node" transform="translate(375 831)">
+    <rect x="-85" y="-22.5" width="171" height="45" rx="6"/>
+    <text>Loki / Tempo traces</text>
+  </g>
+  <g class="node" transform="translate(622 831)">
+    <rect x="-111" y="-22.5" width="222" height="45" rx="6"/>
+    <text>Alertmanager → PagerDuty</text>
+  </g>
+  <g class="node" transform="translate(899 831)">
+    <rect x="-116" y="-33" width="232" height="66" rx="6"/>
+    <text>Policy-as-code: OPA / Kyverno</text>
+  </g>
 
-    <path d="M1424 423L1424 482" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1444" y="452" fill="#fff" font-size="11">Namespace C</text>
+  <!-- ----------  Edges  ---------- -->
+  <!-- Git → CI -->
+  <path d="M1979 74L1026 166" class="edge" marker-end="url(#arrowhead)"/>
+  <text x="1502" y="120" class="edge-label">Pull-Request → Review → Merge</text>
 
-    <!-- K8s → infra add-ons -->
-    <path d="M631 548L631 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="541" y="594" fill="#fff" font-size="11">MetalLB / Cilium / cert-manager</text>
+  <!-- CI → Argo CD -->
+  <path d="M1026 232L1026 324" class="edge" marker-end="url(#arrowhead)"/>
+  <text x="1046" y="278" class="edge-label">Promotes validated artefacts</text>
 
-    <path d="M908 548L908 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="818" y="594" fill="#fff" font-size="11">External-DNS / CSI storage</text>
+  <!-- Argo CD → K8s -->
+  <path d="M1026 390L757 482" class="edge" marker-end="url(#arrowhead)"/>
+  <text x="891" y="445" class="edge-label">Kubernetes manifests: Kustomize/Helm</text>
 
-    <path d="M1141 548L1141 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1051" y="594" fill="#fff" font-size="11">HPA / VPA / PDB</text>
+  <!-- K8s → Observability -->
+  <path d="M757 548L373 640" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M1379 548L1379 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1289" y="594" fill="#fff" font-size="11">PodSecurityPolicies / OPA Gatekeeper</text>
+  <!-- Git → NixOS -->
+  <path d="M1979 90L1301 166" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M1616 548L1616 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1526" y="594" fill="#fff" font-size="11">DSPy Jobs: Cron</text>
+  <!-- Git → Terraform -->
+  <path d="M1979 105L1559 166" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M1804 548L1804 640" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="1714" y="594" fill="#fff" font-size="11">Game Services</text>
+  <!-- Git → Dockerfile -->
+  <path d="M1982 120L1823 166" class="edge" marker-end="url(#arrowhead)"/>
 
-    <!-- Observability → deeper tooling -->
-    <path d="M124 708L124 800" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="80" y="754" fill="#fff" font-size="11">Prometheus → Grafana</text>
+  <!-- Git → Argo Apps -->
+  <path d="M2100 120L2105 166" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M375 708L375 800" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="331" y="754" fill="#fff" font-size="11">Loki / Tempo traces</text>
+  <!-- Git → DSPy -->
+  <path d="M2209 120L2367 166" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M622 708L622 800" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="578" y="754" fill="#fff" font-size="11">Alertmanager → PagerDuty</text>
+  <!-- Argo CD → Namespaces -->
+  <path d="M984 423L984 482" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1204 423L1204 482" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1424 423L1424 482" class="edge" marker-end="url(#arrowhead)"/>
 
-    <path d="M899 708L899 800" stroke="#00ff00" stroke-width="2"
-          marker-end="url(#arrow)"/>
-    <text x="855" y="754" fill="#fff" font-size="11">Policy-as-code: OPA / Kyverno</text>
-  </svg>
+  <!-- K8s → Add-ons -->
+  <path d="M631 548L631 640" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M908 548L908 640" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1141 548L1141 640" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1379 548L1379 640" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1616 548L1616 640" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M1804 548L1804 640" class="edge" marker-end="url(#arrowhead)"/>
 
+  <!-- Observability → leaf nodes -->
+  <path d="M124 708L124 800" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M375 708L375 800" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M622 708L622 800" class="edge" marker-end="url(#arrowhead)"/>
+  <path d="M899 708L899 800" class="edge" marker-end="url(#arrowhead)"/>
+</svg>
   <hr>
 
   <h2>5. A Day in the Life of a Change</h2>
