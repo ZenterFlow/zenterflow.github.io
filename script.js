@@ -1,47 +1,73 @@
+// ================================
+// Clipboard Utility Function
+// ================================
+function copyTextToClipboard(text, btn, successText = "Copied!", resetText = "Copy", timeout = 1200) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = successText;
+    setTimeout(() => (btn.textContent = resetText), timeout);
+  }).catch(err => console.error("Clipboard error:", err));
+}
+
+// ================================
+// 1. Copy Code Buttons (Delegation)
+// ================================
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("copy-btn")) {
     const targetId = e.target.getAttribute("data-target");
-    const code = document.getElementById(targetId).innerText;
-    navigator.clipboard.writeText(code).then(() => {
-      e.target.textContent = "Copied!";
-      setTimeout(() => (e.target.textContent = "Copy"), 1500);
+    const codeElement = document.getElementById(targetId);
+    if (codeElement) {
+      const code = codeElement.innerText;
+      copyTextToClipboard(code, e.target, "Copied!", "Copy", 1500);
+    }
+  }
+});
+
+// ================================
+// 2. Copy Single URL (Reusable)
+// ================================
+function copyUrl(url, event) {
+  copyTextToClipboard(url, event.target, "✅", "CC", 800);
+}
+
+// ================================
+// 3. Copy All Asset URLs
+// ================================
+function copyAssets(event) {
+  const urls = Array.from(document.querySelectorAll("#stack-assets a"))
+    .map((a) => a.href)
+    .join("\n");
+  copyTextToClipboard(urls, event.target, "✅ Copied!", "CC Copy URLs");
+}
+
+// ================================
+// 4. Copy All Tool URLs
+// ================================
+document.addEventListener("DOMContentLoaded", () => {
+  const copyAllToolsBtn = document.getElementById("copyAllTools");
+  if (copyAllToolsBtn) {
+    copyAllToolsBtn.addEventListener("click", (event) => {
+      const urls = [
+        "https://git-scm.com/",
+        "https://nixos.org/",
+        "https://docker.com/",
+        "https://developer.hashicorp.com/terraform/",
+        "https://kubernetes.io/",
+        "https://argo-cd.readthedocs.io/en/stable/",
+        "https://dspy.ai/",
+        "https://www.openpolicyagent.org/",
+      ].join("\n");
+      copyTextToClipboard(urls, event.target, "✅ Copied!", "CC All");
     });
   }
 });
 
-function copyUrl(url) {
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = event.target;
-    btn.textContent = "✅";
-    setTimeout(() => (btn.textContent = "CC"), 800);
-  });
-}
-function copyAssets() {
-  const urls = Array.from(document.querySelectorAll("#stack-assets a"))
-    .map((a) => a.href)
-    .join("\n");
-  navigator.clipboard.writeText(urls).then(() => {
-    const btn = event.target;
-    btn.textContent = "✅ Copied!";
-    setTimeout(() => (btn.textContent = "CC Copy URLs"), 1200);
-  });
-}
-document.getElementById("copyAllTools").addEventListener("click", () => {
-  const urls = [
-    "https://git-scm.com/",
-    "https://nixos.org/",
-    "https://docker.com/",
-    "https://developer.hashicorp.com/terraform/",
-    "https://kubernetes.io/",
-    "https://argo-cd.readthedocs.io/en/stable/",
-    "https://dspy.ai/",
-    "https://www.openpolicyagent.org/",
-  ].join("\n");
-  navigator.clipboard.writeText(urls).then(() => {
-    const btn = document.getElementById("copyAllTools");
-    btn.textContent = "✅ Copied!";
-    setTimeout(() => (btn.textContent = "CC All"), 1200);
-  });
+// ================================
+// 5. Syntax Highlighting
+// ================================
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof hljs !== "undefined") {
+    hljs.highlightAll();
+  } else {
+    console.warn("Highlight.js is not loaded.");
+  }
 });
-
-hljs.highlightAll();
