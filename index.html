@@ -149,26 +149,25 @@
   </ul>
 
   <!-- assets list + copy button -->
-  <section id="stack-assets">
-    <h3>Grab the configs</h3>
-    <button onclick="copyAssets()">
-  <svg class="copy-icon" …></svg>
-  Copy URLs
-</button>
-  <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-    <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-  </svg>
-  All
-</button>
-    <ol>
-      <li><a href="assets/README.md" download>README.md</a></li>
-      <li><a href="assets/flake.nix" download>flake.nix</a></li>
-      <li><a href="assets/main.tf" download>main.tf</a></li>
-      <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
-      <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a></li>
-    </ol>
-  </section>
+<!-- ===== Grab the configs ===== -->
+<section id="stack-assets">
+  <h3>📦 Grab the configs</h3>
+  <button onclick="copyAssets()" class="copy-btn">
+    <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+      <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
+    </svg>
+    Copy URLs
+  </button>
+
+  <ol>
+    <li><a href="assets/README.md" download>README.md</a></li>
+    <li><a href="assets/flake.nix" download>flake.nix</a></li>
+    <li><a href="assets/main.tf" download>main.tf</a></li>
+    <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
+    <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a></li>
+  </ol>
+</section>
 
   <h2>7. The Bigger Picture</h2>
   <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
