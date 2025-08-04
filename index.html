@@ -301,35 +301,7 @@ spec:
 
 </ul>
 
-<style>
-ul { list-style: none; margin: 0; }
-.file-block { margin-bottom: 1.5em; }
-.file-header { display: flex; flex-direction: column; gap: 0.5em; }
-.file-header a { color: #60a5fa; text-decoration: none; font-weight: bold; }
-details summary { cursor: pointer; color: #60a5fa; font-size: 0.9em; }
-.code-container { position: relative; margin-top: 8px; }
-pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0; font-size: 0.9em; }
-.copy-btn {
-  position: absolute; top: 8px; right: 8px;
-  background: #333; color: #fff; border: none;
-  padding: 6px 10px; border-radius: 4px;
-  font-size: 0.8em; cursor: pointer;
-}
-.copy-btn:hover { background: #444; }
-</style>
 
-<script>
-document.addEventListener('click', function(e) {
-  if (e.target.classList.contains('copy-btn')) {
-    const targetId = e.target.getAttribute('data-target');
-    const code = document.getElementById(targetId).innerText;
-    navigator.clipboard.writeText(code).then(() => {
-      e.target.textContent = 'Copied!';
-      setTimeout(() => e.target.textContent = 'Copy', 1500);
-    });
-  }
-});
-</script>
 
 </section>
 
@@ -337,7 +309,7 @@ document.addEventListener('click', function(e) {
   <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
      When everything is code, knowledge lives in the repo, not in someone’s head.<br>
      That means faster onboarding, fearless refactors, and - best of all - Friday deploys that don’t ruin weekends.</p>
-  <p><strong>Welcome to the Declared World: where the robots do the toil, and we get back to building great games.</strong></p>
+  <p><strong>Welcome to the Declared World: </strong>where the robots do the toil, and we get back to building great games.</p>
 
   <!-- JavaScript for copy buttons -->
   <script>
