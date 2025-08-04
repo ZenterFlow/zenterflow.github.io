@@ -5,25 +5,66 @@
   <title>From Snowflake Servers to GitOps Nirvana</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A beginner-friendly tour of the declarative stack that actually runs itself.">
+  <meta name="keywords" content="GitOps,NixOS,Kubernetes,ArgoCD,Terraform,Docker,DSPy,OPA">
+  <meta name="author" content="Jonathan McGuinness">
+  <meta name="theme-color" content="#111827">
+
   <style>
+    /* --- Base styles ------------------------------------------------------ */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      margin: 2rem auto;
-      max-width: 680px;
-      padding: 0 1rem;
-      color: #ffffff;          /* white text */
-      background: #111827;     /* dark background for contrast */
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+      line-height:1.6;
+      margin:2rem auto;
+      max-width:680px;
+      padding:0 1rem;
+      color:#ffffff;
+      background:#111827;
     }
-    h1, h2 { color: #60a5fa; } /* light-blue headings */
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-    th, td { padding: .5rem; border: 1px solid #374151; text-align: left; }
-    code { background: #1f2937; padding: .15rem .35rem; border-radius: 3px; }
-    pre { background: #1f2937; padding: 1rem; overflow-x: auto; }
-    img { max-width: 100%; height: auto; border-radius: 6px; }
-    a { color: #00ff00; /* bright green */ }
-    a:visited { color: #22c55e; /* keep same color after visiting */ }
-    html{scroll-behavior:smooth;} /* 4.  Smooth scroll */
+    h1,h2{color:#60a5fa;}
+    table{width:100%;border-collapse:collapse;margin:1rem 0;}
+    th,td{padding:.5rem;border:1px solid #374151;text-align:left;}
+    code{background:#1f2937;padding:.15rem .35rem;border-radius:3px;}
+    pre{background:#1f2937;padding:1rem;overflow-x:auto;}
+    img{max-width:100%;height:auto;border-radius:6px;}
+    a{color:#00ff00;}
+    a:visited{color:#22c55e;}
+    html{scroll-behavior:smooth;}
+
+    /* --- Zoom-friendly SVG ------------------------------------------------ */
+    .infra-svg{
+      width:100%;
+      height:auto;
+      max-height:70vh;
+      border-radius:6px;
+      cursor:zoom-in;
+      background:#111827;
+      border:1px solid #374151;
+      /* allow native pinch-zoom on touch devices */
+      touch-action:manipulation;
+    }
+    /* dark-theme node & edge colours */
+    .infra-svg .node rect,
+    .infra-svg .node circle,
+    .infra-svg .node polygon{
+      fill:#111827;
+      stroke:#60a5fa;
+      stroke-width:2;
+    }
+    .infra-svg .edgePath .path{
+      stroke:#00ff00;
+      stroke-width:2;
+    }
+
+    /* --- Copy button ------------------------------------------------------ */
+    #copyBtn{
+      background:#00ff22;
+      border:none;
+      color:#111827;
+      padding:.25rem .5rem;
+      border-radius:4px;
+      cursor:pointer;
+      font-size:.9rem;
+    }
   </style>
 </head>
 
@@ -31,8 +72,10 @@
   <h1>From Snowflake Servers to GitOps Nirvana</h1>
   <p><em>A beginner-friendly tour of the declarative stack that actually runs itself — 04 Aug 2025</em></p>
 
-  <p>You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you - step by step - through why these concepts exist and how a small constellation of tools (<a _blank href="https://git-scm.com/">Git</a>, <a _blank href="https://nixos.org/">NixOS</a>, <a _blank href="https://docker.com/">Docker</a>, <a _blank href="https://developer.hashicorp.com/terraform/">Terraform</a>, <a _blank href="https://kubernetes.io/">Kubernetes</a>, <a _blank href="https://argo-cd.readthedocs.io/en/stable/">ArgoCD</a>, <a _blank href="https://dspy.ai/">DSPy</a>, and a pinch of <a _blank href="https://www.openpolicyagent.org/">OPA</a> policy-as-code) fit together to create a platform that deploys itself every time you hit <i>merge</i>.</p>
-      <hr>
+  <p>You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you—step by step—through why these concepts exist and how a small constellation of tools (<a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a>, <a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a>, <a href="https://docker.com/" target="_blank" rel="noopener">Docker</a>, <a href="https://developer.hashicorp.com/terraform/" target="_blank" rel="noopener">Terraform</a>, <a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>, <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" rel="noopener">ArgoCD</a>, <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>, and a pinch of <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a> policy-as-code) fit together to create a platform that deploys itself every time you hit <i>merge</i>.</p>
+
+  <hr>
+
   <h2>1. The Problem We’re Solving</h2>
   <p>In the old world, a server was a pet: lovingly hand-fed config files, patched on Sundays, and inevitably different from every other server. The result?</p>
   <ul>
@@ -40,195 +83,272 @@
     <li>Snow-flake drift and 3 a.m. pages.</li>
     <li>Scaling = more pets.</li>
   </ul>
-      <hr>
+
+  <hr>
+
   <h2>2. The North Star: Everything as Code</h2>
-  <p>Instead of pets, we want cattle - identical, replaceable, and defined in text files that live in Git.</p>
+  <p>Instead of pets, we want cattle—identical, replaceable, and defined in text files that live in Git.</p>
   <p>If Git is the <i>single source of truth</i>, the rest of the stack becomes a conveyor belt that turns that truth into running software.</p>
-      <hr>
+
+  <hr>
+
   <h2>3. The Cast of Characters and Their Jobs</h2>
-<section>
-  <h3>Reproducible Stack Cheat-Sheet</h3>
-  <table border="1" cellpadding="8" style="border-collapse:collapse;">
-    <thead>
-      <tr>
-        <th>Tool</th>
-        <th>One-Sentence Job</th>
-        <th>Why It Matters</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Git</strong></td>
-        <td>The single source-of-truth for every line of code and config.</td>
-        <td>Immutable history + pull-requests = collaboration without chaos.</td>
-      </tr>
-      <tr>
-        <td><strong>NixOS</strong></td>
-        <td>An entire Linux distro expressed in one declarative file.</td>
-        <td>Reinstalls laptop or 1 000-server fleet with <code>nixos-rebuild</code>.</td>
-      </tr>
-      <tr>
-        <td><strong>Terraform</strong></td>
-        <td>Describe cloud resources (VPCs, disks, IAM) in HCL.</td>
-        <td>Re-creates an entire region from scratch in 15 min after a coffee spill.</td>
-      </tr>
-      <tr>
-        <td><strong>Docker</strong></td>
-        <td>Bundle the app and its libraries into an immutable image.</td>
-        <td>Same artifact runs on your Mac, in CI, and in prod.</td>
-      </tr>
-      <tr>
-        <td><strong>Argo CD</strong></td>
-        <td>A robot that watches Git and makes Kubernetes match it.</td>
-        <td>Manual <code>kubectl apply</code> is now a pull-request review.</td>
-      </tr>
-      <tr>
-        <td><strong>Kubernetes</strong></td>
-        <td>The planet-scale scheduler that keeps those containers healthy.</td>
-        <td>Auto-heals, scales, and rolls out with zero downtime.</td>
-      </tr>
-      <tr>
-        <td><strong>DSPy</strong></td>
-        <td>Prompt-engineering as typed, testable code.</td>
-        <td>Turns LLM prompts into reproducible pipelines.</td>
-      </tr>
-      <tr>
-        <td><strong>OPA / Kyverno</strong></td>
-        <td>Policy-as-code gatekeepers for every API call.</td>
-        <td>Blocks <code>:latest</code> images or unencrypted buckets before they deploy.</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-      <hr>
+  <section>
+    <h3>Reproducible Stack Cheat-Sheet</h3>
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>One-Sentence Job</th><th>Why It Matters</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Git</strong></td><td>The single source-of-truth for every line of code and config.</td><td>Immutable history + pull-requests = collaboration without chaos.</td></tr>
+        <tr><td><strong>NixOS</strong></td><td>An entire Linux distro expressed in one declarative file.</td><td>Reinstalls laptop or 1 000-server fleet with <code>nixos-rebuild</code>.</td></tr>
+        <tr><td><strong>Terraform</strong></td><td>Describe cloud resources (VPCs, disks, IAM) in HCL.</td><td>Re-creates an entire region from scratch in 15 min after a coffee spill.</td></tr>
+        <tr><td><strong>Docker</strong></td><td>Bundle the app and its libraries into an immutable image.</td><td>Same artifact runs on your Mac, in CI, and in prod.</td></tr>
+        <tr><td><strong>Argo CD</strong></td><td>A robot that watches Git and makes Kubernetes match it.</td><td>Manual <code>kubectl apply</code> is now a pull-request review.</td></tr>
+        <tr><td><strong>Kubernetes</strong></td><td>The planet-scale scheduler that keeps those containers healthy.</td><td>Auto-heals, scales, and rolls out with zero downtime.</td></tr>
+        <tr><td><strong>DSPy</strong></td><td>Prompt-engineering as typed, testable code.</td><td>Turns LLM prompts into reproducible pipelines.</td></tr>
+        <tr><td><strong>OPA / Kyverno</strong></td><td>Policy-as-code gatekeepers for every API call.</td><td>Blocks <code>:latest</code> images or unencrypted buckets before they deploy.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr>
+
   <h2>4. How the Characters relate to Each Other</h2>
   <p>Table: A Declarative Software Architecture Workflow</p>
-  <!-- IMAGE 2 -->
-  <svg id="export-svg" width="100%" xmlns="http://www.w3.org/2000/svg" class="flowchart" style="max-width: 2471.890625px;" viewBox="0 0 2471.890625 872" role="graphics-document document" aria-roledescription="flowchart-v2">
-  <!-- 1.  Slim inlined styles for the flowchart -->
-    <!-- 2.  Zoom helper + responsive viewBox -->
-<style>
-.infra-svg{
-  width:100%;
-  max-height:70vh;
-  cursor:zoom-in;
-}
-.infra-svg:hover{filter:brightness(1.1);}
-</style>
-<style>
-#export-svg{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  font-size:14px;
-  fill:#fff;               /* white text on dark bg */
-}
-#export-svg .node rect,
-#export-svg .node circle,
-#export-svg .node polygon{
-  fill:#111827;            /* node bg */
-  stroke:#60a5fa;          /* node border */
-  stroke-width:2;
-}
-#export-svg .edgePath .path{
-  stroke:#00ff00;          /* bright-green arrows */
-  stroke-width:2;
-}
-</style>  
-    <style xmlns="http://www.w3.org/1999/xhtml">@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"); p {margin: 0;}</style><style>#export-svg{font-family:"Recursive Variable",arial,sans-serif;font-size:14px;fill:#28253D;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#export-svg .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#export-svg .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#export-svg .error-icon{fill:#ffffff;}#export-svg .error-text{fill:#000000;stroke:#000000;}#export-svg .edge-thickness-normal{stroke-width:2px;}#export-svg .edge-thickness-thick{stroke-width:3.5px;}#export-svg .edge-pattern-solid{stroke-dasharray:0;}#export-svg .edge-thickness-invisible{stroke-width:0;fill:none;}#export-svg .edge-pattern-dashed{stroke-dasharray:3;}#export-svg .edge-pattern-dotted{stroke-dasharray:2;}#export-svg .marker{fill:#000000;stroke:#000000;}#export-svg .marker.cross{stroke:#000000;}#export-svg svg{font-family:"Recursive Variable",arial,sans-serif;font-size:14px;}#export-svg p{margin:0;}#export-svg .label{font-family:"Recursive Variable",arial,sans-serif;color:#28253D;}#export-svg .cluster-label text{fill:#000000;}#export-svg .cluster-label span{color:#000000;}#export-svg .cluster-label span p{background-color:transparent;}#export-svg .label text,#export-svg span{fill:#28253D;color:#28253D;}#export-svg .node rect,#export-svg .node circle,#export-svg .node ellipse,#export-svg .node polygon,#export-svg .node path{fill:#ffffff;stroke:#28253D;stroke-width:2px;}#export-svg .rough-node .label text,#export-svg .node .label text,#export-svg .image-shape .label,#export-svg .icon-shape .label{text-anchor:middle;}#export-svg .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#export-svg .rough-node .label,#export-svg .node .label,#export-svg .image-shape .label,#export-svg .icon-shape .label{text-align:center;}#export-svg .node.clickable{cursor:pointer;}#export-svg .root .anchor path{fill:#000000!important;stroke-width:0;stroke:#000000;}#export-svg .arrowheadPath{fill:#000000;}#export-svg .edgePath .path{stroke:#000000;stroke-width:2px;}#export-svg .flowchart-link{stroke:#000000;fill:none;}#export-svg .edgeLabel{background-color:hsl(-120, 0%, 80%);text-align:center;}#export-svg .edgeLabel p{background-color:hsl(-120, 0%, 80%);}#export-svg .edgeLabel rect{opacity:0.5;background-color:hsl(-120, 0%, 80%);fill:hsl(-120, 0%, 80%);}#export-svg .labelBkg{background-color:rgba(204, 204, 204, 0.5);}#export-svg .cluster rect{fill:#F9F9FB;stroke:#BDBCCC;stroke-width:2px;}#export-svg .cluster text{fill:#000000;}#export-svg .cluster span{color:#000000;}#export-svg div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"Recursive Variable",arial,sans-serif;font-size:12px;background:#ffffff;border:1px solid hsl(0, 0%, 90%);border-radius:2px;pointer-events:none;z-index:100;}#export-svg .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#28253D;}#export-svg rect.text{fill:none;stroke-width:0;}#export-svg .icon-shape,#export-svg .image-shape{background-color:hsl(-120, 0%, 80%);text-align:center;}#export-svg .icon-shape p,#export-svg .image-shape p{background-color:hsl(-120, 0%, 80%);padding:2px;}#export-svg .icon-shape rect,#export-svg .image-shape rect{opacity:0.5;background-color:hsl(-120, 0%, 80%);fill:hsl(-120, 0%, 80%);}#export-svg .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#export-svg .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#export-svg .node .neo-node{stroke:#28253D;}#export-svg [data-look="neo"].node rect,#export-svg [data-look="neo"].cluster rect,#export-svg [data-look="neo"].node polygon{stroke:#28253D;filter:url(#drop-shadow);}#export-svg [data-look="neo"].node path{stroke:#28253D;stroke-width:2;}#export-svg [data-look="neo"].node .outer-path{filter:url(#drop-shadow);}#export-svg [data-look="neo"].node .neo-line path{stroke:#28253D;filter:none;}#export-svg [data-look="neo"].node circle{stroke:#28253D;filter:url(#drop-shadow);}#export-svg [data-look="neo"].node circle .state-start{fill:#000000;}#export-svg [data-look="neo"].statediagram-cluster rect{fill:#F9F9FB;stroke:#28253D;stroke-width:2;}#export-svg [data-look="neo"].icon-shape .icon{fill:#28253D;filter:url(#drop-shadow);}#export-svg [data-look="neo"].icon-shape .icon-neo path{stroke:#28253D;filter:url(#drop-shadow);}#export-svg :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="export-svg_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="7.75" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="4" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="10.75" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="0" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="export-svg_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><marker id="export-svg_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"/></marker><marker id="export-svg_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"/></marker><g class="root"><g class="clusters"/><g class="edgePaths"><path d="M1979.65625,49.56798924794016L1033.420622854618,119.45882269103973Q1026.09375,120 1026.09375,127.34683188234712L1026.09375,162" id="L_A_B_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 986.624267578125 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_B_0" data-points="W3sieCI6MTk3OS42NTYyNSwieSI6NDkuNTY3OTg5MjQ3OTQwMTZ9LHsieCI6MTAyNi4wOTM3NSwieSI6MTIwfSx7IngiOjEwMjYuMDkzNzUsInkiOjE2Nn1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1026.09375,232L1026.09375,278L1026.09375,320" id="L_B_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 79 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B_C_0" data-points="W3sieCI6MTAyNi4wOTM3NSwieSI6MjMyfSx7IngiOjEwMjYuMDkzNzUsInkiOjI3OH0seyJ4IjoxMDI2LjA5Mzc1LCJ5IjozMjR9XQ==" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M913.8849386867089,390L765.4793594745535,433.64527220885935Q757.47265625,436 757.47265625,444.3457797416686L757.47265625,478" id="L_C_D_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 193.86810302734375 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C_D_0" data-points="W3sieCI6OTEzLjg4NDkzODY4NjcwODksInkiOjM5MH0seyJ4Ijo3NTcuNDcyNjU2MjUsInkiOjQzNn0seyJ4Ijo3NTcuNDcyNjU2MjUsInkiOjQ4Mn1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M641.47265625,538.8425123227806L380.86744610552404,592.4070203766643Q373.1171875,594 373.1171875,601.9122748013996L373.1171875,646.5" id="L_D_E_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 315.1532897949219 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_E_0" data-points="W3sieCI6NjQxLjQ3MjY1NjI1LCJ5Ijo1MzguODQyNTEyMzIyNzgwNn0seyJ4IjozNzMuMTE3MTg3NSwieSI6NTk0fSx7IngiOjM3My4xMTcxODc1LCJ5Ijo2NTAuNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1979.65625,52.543492594597254L1309.2019693800896,119.2623203821142Q1301.7890625,120 1301.7890625,127.44952076522536L1301.7890625,172.5" id="L_A_A1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 722.2237548828125 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_A1_0" data-points="W3sieCI6MTk3OS42NTYyNSwieSI6NTIuNTQzNDkyNTk0NTk3MjU0fSx7IngiOjEzMDEuNzg5MDYyNSwieSI6MTIwfSx7IngiOjEzMDEuNzg5MDYyNSwieSI6MTc2LjV9XQ==" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1979.65625,58.093028678013525L1567.1001981799106,118.88468751464129Q1559.53125,120 1559.53125,127.65067960969284L1559.53125,172.5" id="L_A_A2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 465.75189208984375 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_A2_0" data-points="W3sieCI6MTk3OS42NTYyNSwieSI6NTguMDkzMDI4Njc4MDEzNTI1fSx7IngiOjE1NTkuNTMxMjUsInkiOjEyMH0seyJ4IjoxNTU5LjUzMTI1LCJ5IjoxNzYuNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1982.0033623417721,74L1831.5745034586814,117.67818931332374Q1823.578125,120 1823.578125,128.32663637486527L1823.578125,162" id="L_A_A3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 195.79444885253906 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_A3_0" data-points="W3sieCI6MTk4Mi4wMDMzNjIzNDE3NzIxLCJ5Ijo3NH0seyJ4IjoxODIzLjU3ODEyNSwieSI6MTIwfSx7IngiOjE4MjMuNTc4MTI1LCJ5IjoxNjZ9XQ==" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M2099.8008306962024,74L2102.9612229059817,99.16368978368959Q2105.578125,120 2105.578125,141L2105.578125,162" id="L_A_A4_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 79.30679321289062 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_A4_0" data-points="W3sieCI6MjA5OS44MDA4MzA2OTYyMDI0LCJ5Ijo3NH0seyJ4IjoyMTA1LjU3ODEyNSwieSI6MTIwfSx7IngiOjIxMDUuNTc4MTI1LCJ5IjoxNjZ9XQ==" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M2209.309137658228,74L2359.7379965413184,117.67818931332374Q2367.734375,120 2367.734375,128.32663637486527L2367.734375,172.5" id="L_A_A5_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 206.2948760986328 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_A5_0" data-points="W3sieCI6MjIwOS4zMDkxMzc2NTgyMjgsInkiOjc0fSx7IngiOjIzNjcuNzM0Mzc1LCJ5IjoxMjB9LHsieCI6MjM2Ny43MzQzNzUsInkiOjE3Ni41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1008.8904766613924,390L994.6228808270644,417.3686671870863Q984.91015625,436 984.91015625,457.0110347459487L984.91015625,488.5" id="L_C_F_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 94.57306671142578 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C_F_0" data-points="W3sieCI6MTAwOC44OTA0NzY2NjEzOTI0LCJ5IjozOTB9LHsieCI6OTg0LjkxMDE1NjI1LCJ5Ijo0MzZ9LHsieCI6OTg0LjkxMDE1NjI1LCJ5Ijo0OTIuNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1100.7892108386077,390L1196.5312753086598,432.29826139420095Q1204.91015625,436 1204.91015625,445.16015908894684L1204.91015625,488.5" id="L_C_G_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 155.3850555419922 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C_G_0" data-points="W3sieCI6MTEwMC43ODkyMTA4Mzg2MDc3LCJ5IjozOTB9LHsieCI6MTIwNC45MTAxNTYyNSwieSI6NDM2fSx7IngiOjEyMDQuOTEwMTU2MjUsInkiOjQ5Mi41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M1142.09375,379.97799151787024L1417.1825737625156,434.4692730616288Q1424.91015625,436 1424.91015625,443.87773165706534L1424.91015625,488.5" id="L_C_H_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 329.4872741699219 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C_H_0" data-points="W3sieCI6MTE0Mi4wOTM3NSwieSI6Mzc5Ljk3Nzk5MTUxNzg3MDI0fSx7IngiOjE0MjQuOTEwMTU2MjUsInkiOjQzNn0seyJ4IjoxNDI0LjkxMDE1NjI1LCJ5Ijo0OTIuNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M704.7597903481013,548L640.0294740923956,588.5233219611636Q631.28125,594 631.28125,604.3211155943457L631.28125,636" id="L_D_D1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 117.99028015136719 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D1_0" data-points="W3sieCI6NzA0Ljc1OTc5MDM0ODEwMTMsInkiOjU0OH0seyJ4Ijo2MzEuMjgxMjUsInkiOjU5NH0seyJ4Ijo2MzEuMjgxMjUsInkiOjY0MH1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M820.582871835443,548L900.0008264905983,589.5272310403046Q908.5546875,594 908.5546875,603.6526784021315L908.5546875,646.5" id="L_D_D2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 140.94076538085938 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D2_0" data-points="W3sieCI6ODIwLjU4Mjg3MTgzNTQ0MywieSI6NTQ4fSx7IngiOjkwOC41NTQ2ODc1LCJ5Ijo1OTR9LHsieCI6OTA4LjU1NDY4NzUsInkiOjY1MC41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M873.47265625,538.8425123227806L1134.077866394476,592.4070203766643Q1141.828125,594 1141.828125,601.9122748013996L1141.828125,646.5" id="L_D_D3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 315.1533508300781 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D3_0" data-points="W3sieCI6ODczLjQ3MjY1NjI1LCJ5Ijo1MzguODQyNTEyMzIyNzgwNn0seyJ4IjoxMTQxLjgyODEyNSwieSI6NTk0fSx7IngiOjExNDEuODI4MTI1LCJ5Ijo2NTAuNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M873.47265625,529.7247039033912L1372.325036878539,593.0475797331934Q1379.828125,594 1379.828125,601.5632952952421L1379.828125,636" id="L_D_D4_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 540.9742431640625 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D4_0" data-points="W3sieCI6ODczLjQ3MjY1NjI1LCJ5Ijo1MjkuNzI0NzAzOTAzMzkxMn0seyJ4IjoxMzc5LjgyODEyNSwieSI6NTk0fSx7IngiOjEzNzkuODI4MTI1LCJ5Ijo2NDB9XQ==" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M873.47265625,525.6635151658402L1609.463934723346,593.3208786134834Q1616.8515625,594 1616.8515625,601.4187768549817L1616.8515625,646.5" id="L_D_D5_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 787.5087280273438 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D5_0" data-points="W3sieCI6ODczLjQ3MjY1NjI1LCJ5Ijo1MjUuNjYzNTE1MTY1ODQwMn0seyJ4IjoxNjE2Ljg1MTU2MjUsInkiOjU5NH0seyJ4IjoxNjE2Ljg1MTU2MjUsInkiOjY1MC41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M873.47265625,523.7518755479286L1797.2302650675424,593.4468033826117Q1804.5625,594 1804.5625,601.3530738879901L1804.5625,646.5" id="L_D_D6_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 974.7031860351562 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D6_0" data-points="W3sieCI6ODczLjQ3MjY1NjI1LCJ5Ijo1MjMuNzUxODc1NTQ3OTI4Nn0seyJ4IjoxODA0LjU2MjUsInkiOjU5NH0seyJ4IjoxODA0LjU2MjUsInkiOjY1MC41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M302.1660897943038,695.5L132.06933787061612,749.441052951119Q124,752 124,760.465366127294L124,794" id="L_E_E1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 217.7783660888672 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_E_E1_0" data-points="W3sieCI6MzAyLjE2NjA4OTc5NDMwMzgsInkiOjY5NS41fSx7IngiOjEyNCwieSI6NzUyfSx7IngiOjEyNCwieSI6Nzk4fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M373.8203125,695.5L374.7660252500848,725.7628080027142Q375.5859375,752 375.5859375,778.25L375.5859375,804.5" id="L_E_E2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 100.02332305908203 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_E_E2_0" data-points="W3sieCI6MzczLjgyMDMxMjUsInkiOjY5NS41fSx7IngiOjM3NS41ODU5Mzc1LCJ5Ijo3NTJ9LHsieCI6Mzc1LjU4NTkzNzUsInkiOjgwOC41fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M444.0682852056962,695.5L614.1650371293839,749.441052951119Q622.234375,752 622.234375,760.465366127294L622.234375,804.5" id="L_E_E3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 228.2784423828125 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_E_E3_0" data-points="W3sieCI6NDQ0LjA2ODI4NTIwNTY5NjIsInkiOjY5NS41fSx7IngiOjYyMi4yMzQzNzUsInkiOjc1Mn0seyJ4Ijo2MjIuMjM0Mzc1LCJ5Ijo4MDguNX1d" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/><path d="M465.28125,686.8374040474529L891.7190299341241,750.862271246067Q899.296875,752 899.296875,759.6627777313415L899.296875,794" id="L_E_E4_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 469.4751281738281 9; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_E_E4_0" data-points="W3sieCI6NDY1LjI4MTI1LCJ5Ijo2ODYuODM3NDA0MDQ3NDUyOX0seyJ4Ijo4OTkuMjk2ODc1LCJ5Ijo3NTJ9LHsieCI6ODk5LjI5Njg3NSwieSI6Nzk4fV0=" marker-end="url(#export-svg_flowchart-v2-pointEnd-margin)"/></g><g class="edgeLabels"><g class="edgeLabel" transform="translate(1026.09375, 120)"><g class="label" data-id="L_A_B_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Pull-Request → Review → Merge</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1026.09375, 278)"><g class="label" data-id="L_B_C_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Promotes validated artefacts</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(757.47265625, 436)"><g class="label" data-id="L_C_D_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Kubernetes manifests: Kustomize/Helm</p></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_D_E_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1301.7890625, 120)"><g class="label" data-id="L_A_A1_0" transform="translate(-93.6953125, -10.5)"><foreignObject width="187.390625" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>NixOS host specs: flake.nix</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1559.53125, 120)"><g class="label" data-id="L_A_A2_0" transform="translate(-82.046875, -10.5)"><foreignObject width="164.09375" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Terraform infra: main.tf</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1823.578125, 120)"><g class="label" data-id="L_A_A3_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Dockerfiles &amp; image lockfiles</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(2105.578125, 120)"><g class="label" data-id="L_A_A4_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Argo CD Apps &amp; Projects: YAML</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(2367.734375, 120)"><g class="label" data-id="L_A_A5_0" transform="translate(-80.15625, -10.5)"><foreignObject width="160.3125" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>DSPy pipelines: Python</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(984.91015625, 436)"><g class="label" data-id="L_C_F_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Watches Git → Syncs desired state to clusters</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1204.91015625, 436)"><g class="label" data-id="L_C_G_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Watches Git → Syncs desired state to clusters</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1424.91015625, 436)"><g class="label" data-id="L_C_H_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Watches Git → Syncs desired state to clusters</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(631.28125, 594)"><g class="label" data-id="L_D_D1_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>MetalLB / Cilium / cert-manager</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(908.5546875, 594)"><g class="label" data-id="L_D_D2_0" transform="translate(-95.2734375, -10.5)"><foreignObject width="190.546875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>External-DNS / CSI storage</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1141.828125, 594)"><g class="label" data-id="L_D_D3_0" transform="translate(-56, -10.5)"><foreignObject width="112" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>HPA / VPA / PDB</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1379.828125, 594)"><g class="label" data-id="L_D_D4_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>PodSecurityPolicies / OPA Gatekeeper</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1616.8515625, 594)"><g class="label" data-id="L_D_D5_0" transform="translate(-55.0234375, -10.5)"><foreignObject width="110.046875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>DSPy Jobs: Cron</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(1804.5625, 594)"><g class="label" data-id="L_D_D6_0" transform="translate(-50.6875, -10.5)"><foreignObject width="101.375" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Game Services</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(124, 752)"><g class="label" data-id="L_E_E1_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Prometheus → Grafana dashboards</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(375.5859375, 752)"><g class="label" data-id="L_E_E2_0" transform="translate(-69.5859375, -10.5)"><foreignObject width="139.171875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Loki / Tempo traces</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(622.234375, 752)"><g class="label" data-id="L_E_E3_0" transform="translate(-95.0625, -10.5)"><foreignObject width="190.125" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Alertmanager → PagerDuty</p></span></div></foreignObject></g></g><g class="edgeLabel" transform="translate(899.296875, 752)"><g class="label" data-id="L_E_E4_0" transform="translate(-100, -21)"><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml" class="labelBkg"><span class="edgeLabel"><p>Policy-as-code: OPA / Kyverno</p></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default" id="flowchart-A-0" data-id="A" data-node="true" data-et="node" data-look="neo" transform="translate(2095.65625, 41)"><rect class="basic label-container" style="" data-id="A" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Git Repository: single source of truth</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-B-2" data-id="B" data-node="true" data-et="node" data-look="neo" transform="translate(1026.09375, 199)"><rect class="basic label-container" style="" data-id="B" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>CI Pipeline: GitHub/GitLab Actions</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-C-4" data-id="C" data-node="true" data-et="node" data-look="neo" transform="translate(1026.09375, 357)"><rect class="basic label-container" style="" data-id="C" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Argo CD: Declarative Continuous Delivery</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D-6" data-id="D" data-node="true" data-et="node" data-look="neo" transform="translate(757.47265625, 515)"><rect class="basic label-container" style="" data-id="D" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Kubernetes Cluster: NixOS nodes</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-E-8" data-id="E" data-node="true" data-et="node" data-look="neo" transform="translate(373.1171875, 673)"><rect class="basic label-container" style="" data-id="E" x="-92.1640625" y="-22.5" width="184.328125" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-76.1640625, -10.5)"><rect/><foreignObject width="152.328125" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Observability &amp; Policy</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-A1-10" data-id="A1" data-node="true" data-et="node" data-look="neo" transform="translate(1301.7890625, 199)"><rect class="basic label-container" style="" data-id="A1" x="-109.6953125" y="-22.5" width="219.390625" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-93.6953125, -10.5)"><rect/><foreignObject width="187.390625" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>NixOS host specs: flake.nix</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-A2-12" data-id="A2" data-node="true" data-et="node" data-look="neo" transform="translate(1559.53125, 199)"><rect class="basic label-container" style="" data-id="A2" x="-98.046875" y="-22.5" width="196.09375" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-82.046875, -10.5)"><rect/><foreignObject width="164.09375" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Terraform infra: main.tf</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-A3-14" data-id="A3" data-node="true" data-et="node" data-look="neo" transform="translate(1823.578125, 199)"><rect class="basic label-container" style="" data-id="A3" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Dockerfiles &amp; image lockfiles</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-A4-16" data-id="A4" data-node="true" data-et="node" data-look="neo" transform="translate(2105.578125, 199)"><rect class="basic label-container" style="" data-id="A4" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Argo CD Apps &amp; Projects: YAML</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-A5-18" data-id="A5" data-node="true" data-et="node" data-look="neo" transform="translate(2367.734375, 199)"><rect class="basic label-container" style="" data-id="A5" x="-96.15625" y="-22.5" width="192.3125" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-80.15625, -10.5)"><rect/><foreignObject width="160.3125" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>DSPy pipelines: Python</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-F-20" data-id="F" data-node="true" data-et="node" data-look="neo" transform="translate(984.91015625, 515)"><rect class="basic label-container" style="" data-id="F" x="-61.4375" y="-22.5" width="122.875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-45.4375, -10.5)"><rect/><foreignObject width="90.875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Namespace A</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-G-22" data-id="G" data-node="true" data-et="node" data-look="neo" transform="translate(1204.91015625, 515)"><rect class="basic label-container" style="" data-id="G" x="-61.0859375" y="-22.5" width="122.171875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-45.0859375, -10.5)"><rect/><foreignObject width="90.171875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Namespace B</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-H-24" data-id="H" data-node="true" data-et="node" data-look="neo" transform="translate(1424.91015625, 515)"><rect class="basic label-container" style="" data-id="H" x="-61.0859375" y="-22.5" width="122.171875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-45.0859375, -10.5)"><rect/><foreignObject width="90.171875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Namespace C</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D1-26" data-id="D1" data-node="true" data-et="node" data-look="neo" transform="translate(631.28125, 673)"><rect class="basic label-container" style="" data-id="D1" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>MetalLB / Cilium / cert-manager</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D2-28" data-id="D2" data-node="true" data-et="node" data-look="neo" transform="translate(908.5546875, 673)"><rect class="basic label-container" style="" data-id="D2" x="-111.2734375" y="-22.5" width="222.546875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-95.2734375, -10.5)"><rect/><foreignObject width="190.546875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>External-DNS / CSI storage</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D3-30" data-id="D3" data-node="true" data-et="node" data-look="neo" transform="translate(1141.828125, 673)"><rect class="basic label-container" style="" data-id="D3" x="-72" y="-22.5" width="144" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-56, -10.5)"><rect/><foreignObject width="112" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>HPA / VPA / PDB</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D4-32" data-id="D4" data-node="true" data-et="node" data-look="neo" transform="translate(1379.828125, 673)"><rect class="basic label-container" style="" data-id="D4" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>PodSecurityPolicies / OPA Gatekeeper</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D5-34" data-id="D5" data-node="true" data-et="node" data-look="neo" transform="translate(1616.8515625, 673)"><rect class="basic label-container" style="" data-id="D5" x="-71.0234375" y="-22.5" width="142.046875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-55.0234375, -10.5)"><rect/><foreignObject width="110.046875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>DSPy Jobs: Cron</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-D6-36" data-id="D6" data-node="true" data-et="node" data-look="neo" transform="translate(1804.5625, 673)"><rect class="basic label-container" style="" data-id="D6" x="-66.6875" y="-22.5" width="133.375" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-50.6875, -10.5)"><rect/><foreignObject width="101.375" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Game Services</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-E1-38" data-id="E1" data-node="true" data-et="node" data-look="neo" transform="translate(124, 831)"><rect class="basic label-container" style="" data-id="E1" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Prometheus → Grafana dashboards</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-E2-40" data-id="E2" data-node="true" data-et="node" data-look="neo" transform="translate(375.5859375, 831)"><rect class="basic label-container" style="" data-id="E2" x="-85.5859375" y="-22.5" width="171.171875" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-69.5859375, -10.5)"><rect/><foreignObject width="139.171875" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Loki / Tempo traces</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-E3-42" data-id="E3" data-node="true" data-et="node" data-look="neo" transform="translate(622.234375, 831)"><rect class="basic label-container" style="" data-id="E3" x="-111.0625" y="-22.5" width="222.125" height="45" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-95.0625, -10.5)"><rect/><foreignObject width="190.125" height="21"><div style="display: table-cell; white-space: normal; line-height: 1.5; max-width: 200px; text-align: center;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Alertmanager → PagerDuty</p></span></div></foreignObject></g></g><g class="node default" id="flowchart-E4-44" data-id="E4" data-node="true" data-et="node" data-look="neo" transform="translate(899.296875, 831)"><rect class="basic label-container" style="" data-id="E4" x="-116" y="-33" width="232" height="66" stroke="url(#gradient)"/><g class="label" style="" transform="translate(-100, -21)"><rect/><foreignObject width="200" height="42"><div style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 200px; text-align: center; width: 200px;" xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel"><p>Policy-as-code: OPA / Kyverno</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs><defs><filter id="drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"/></filter></defs></svg>
-      <hr>
+
+  <!--  SVG: zoomable without JS  -->
+  <svg class="infra-svg" viewBox="0 0 2472 872" preserveAspectRatio="xMidYMid meet"
+       xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="svgTitle">
+    <title id="svgTitle">Declarative GitOps workflow from Git to running services</title>
+
+    <!-- Gradient for node strokes -->
+    <defs>
+      <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"  stop-color="#60a5fa"/>
+        <stop offset="100%" stop-color="#00ff00"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ========== Nodes ========== -->
+    <!-- Git -->
+    <g id="git">
+      <rect x="1979" y="8" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
+      <text x="2095" y="41" text-anchor="middle" fill="#fff" font-size="14">Git Repository: single source of truth</text>
+    </g>
+
+    <!-- CI -->
+    <g id="ci">
+      <rect x="910" y="166" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
+      <text x="1026" y="199" text-anchor="middle" fill="#fff" font-size="14">CI Pipeline: GitHub/GitLab Actions</text>
+    </g>
+
+    <!-- Argo CD -->
+    <g id="argocd">
+      <rect x="910" y="324" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
+      <text x="1026" y="357" text-anchor="middle" fill="#fff" font-size="14">Argo CD: Declarative Continuous Delivery</text>
+    </g>
+
+    <!-- K8s -->
+    <g id="k8s">
+      <rect x="641" y="482" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
+      <text x="757" y="515" text-anchor="middle" fill="#fff" font-size="14">Kubernetes Cluster: NixOS nodes</text>
+    </g>
+
+    <!-- Observability -->
+    <g id="obs">
+      <rect x="257" y="640" width="232" height="66" rx="6" fill="#111827" stroke="url(#grad)" stroke-width="2"/>
+      <text x="373" y="673" text-anchor="middle" fill="#fff" font-size="14">Observability &amp; Policy</text>
+    </g>
+
+    <!-- ========== Edges ========== -->
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0L10 5L0 10z" fill="#00ff00"/>
+      </marker>
+    </defs>
+
+    <!-- Git → CI -->
+    <path d="M1979 41L1026 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1502" y="85" fill="#fff" font-size="12" text-anchor="middle">Pull-Request → Review → Merge</text>
+
+    <!-- CI → Argo CD -->
+    <path d="M1026 232L1026 324" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1046" y="278" fill="#fff" font-size="12">Promotes validated artefacts</text>
+
+    <!-- Argo CD → K8s -->
+    <path d="M1026 390L757 482" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="891" y="445" fill="#fff" font-size="12">Kustomize/Helm manifests</text>
+
+    <!-- K8s → Observability -->
+    <path d="M641 548L373 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+
+    <!-- Git → NixOS flake -->
+    <path d="M1979 60L1301 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1640" y="95" fill="#fff" font-size="12">NixOS host specs: flake.nix</text>
+
+    <!-- Git → Terraform -->
+    <path d="M1979 75L1559 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1769" y="95" fill="#fff" font-size="12">Terraform infra: main.tf</text>
+
+    <!-- Git → Dockerfile -->
+    <path d="M1982 90L1823 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1902" y="105" fill="#fff" font-size="12">Dockerfiles &amp; image lockfiles</text>
+
+    <!-- Git → Argo Apps -->
+    <path d="M2100 90L2105 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="2105" y="105" fill="#fff" font-size="12">Argo CD Apps &amp; Projects: YAML</text>
+
+    <!-- Git → DSPy -->
+    <path d="M2209 90L2367 120" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="2288" y="105" fill="#fff" font-size="12">DSPy pipelines: Python</text>
+
+    <!-- Argo CD → Namespaces -->
+    <path d="M984 423L984 482" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1004" y="452" fill="#fff" font-size="11">Namespace A</text>
+
+    <path d="M1204 423L1204 482" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1224" y="452" fill="#fff" font-size="11">Namespace B</text>
+
+    <path d="M1424 423L1424 482" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1444" y="452" fill="#fff" font-size="11">Namespace C</text>
+
+    <!-- K8s → infra add-ons -->
+    <path d="M631 548L631 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="541" y="594" fill="#fff" font-size="11">MetalLB / Cilium / cert-manager</text>
+
+    <path d="M908 548L908 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="818" y="594" fill="#fff" font-size="11">External-DNS / CSI storage</text>
+
+    <path d="M1141 548L1141 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1051" y="594" fill="#fff" font-size="11">HPA / VPA / PDB</text>
+
+    <path d="M1379 548L1379 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1289" y="594" fill="#fff" font-size="11">PodSecurityPolicies / OPA Gatekeeper</text>
+
+    <path d="M1616 548L1616 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1526" y="594" fill="#fff" font-size="11">DSPy Jobs: Cron</text>
+
+    <path d="M1804 548L1804 640" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="1714" y="594" fill="#fff" font-size="11">Game Services</text>
+
+    <!-- Observability → deeper tooling -->
+    <path d="M124 708L124 800" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="80" y="754" fill="#fff" font-size="11">Prometheus → Grafana</text>
+
+    <path d="M375 708L375 800" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="331" y="754" fill="#fff" font-size="11">Loki / Tempo traces</text>
+
+    <path d="M622 708L622 800" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="578" y="754" fill="#fff" font-size="11">Alertmanager → PagerDuty</text>
+
+    <path d="M899 708L899 800" stroke="#00ff00" stroke-width="2"
+          marker-end="url(#arrow)"/>
+    <text x="855" y="754" fill="#fff" font-size="11">Policy-as-code: OPA / Kyverno</text>
+  </svg>
+
+  <hr>
+
   <h2>5. A Day in the Life of a Change</h2>
   <p>Let’s add a new feature: “Show real-time in-game leaderboards”.</p>
   <ol>
-    <li><strong>Code</strong></li>
+    <li><strong>Code</strong>
       <ul>
         <li>Write the leaderboard service in Go.</li>
         <li>Add a DSPy pipeline to pre-aggregate stats.</li>
         <li>Commit everything to git.</li>
       </ul>
-    <li><strong>CI Gate</strong></li>
+    </li>
+    <li><strong>CI Gate</strong>
       <ul>
         <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
         <li>Terraform dry-run shows a new Redis cache.</li>
-        <li>Tests pass → image is signed & pushed.</li>
+        <li>Tests pass → image is signed &amp; pushed.</li>
       </ul>
-    <li><strong>GitOps Sync</strong></li>
+    </li>
+    <li><strong>GitOps Sync</strong>
       <ul>
         <li>Argo CD detects the new commit hash.</li>
         <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
         <li>OPA policy ensures the service can’t talk to the payments DB.</li>
       </ul>
-    <li><strong>Observe</strong></li>
+    </li>
+    <li><strong>Observe</strong>
       <ul>
         <li>Prometheus sees p95 latency drop.</li>
         <li>Grafana dashboard auto-updates.</li>
         <li>No humans touched a server.</li>
       </ul>
+    </li>
   </ol>
-      <hr>
+
+  <hr>
+
   <h2>6. Beginner Take-aways</h2>
   <ul>
     <li><strong>Start small:</strong> Put one service in Docker, store its manifest in Git, and let Argo CD sync it.</li>
-    <li><strong>Lean on NixOS for dev laptops</strong> - nix develop gives the exact same tools as prod.</li>
+    <li><strong>Lean on NixOS for dev laptops</strong> – <code>nix develop</code> gives the exact same tools as prod.</li>
     <li><strong>Policies early:</strong> A 15-line OPA rule today prevents a 3 a.m. breach tomorrow.</li>
     <li><strong>Celebrate merges:</strong> Every green PR is a fully tested, policy-compliant, zero-downtime release.</li>
   </ul>
-      <br><br>
-  <!-- ===== Reproducible Stack Assets ===== -->
-<section id="stack-assets">
-  <h3>Grab the configs</h3>
-  <!-- 3.  Copy-to-clipboard button -->
-<button id="copyBtn" onclick="navigator.clipboard.writeText(
-  Array.from(document.querySelectorAll('#stack-assets a')).map(a=>a.href).join('\n')
-)">📋 Copy URLs</button>
-<style>
-#copyBtn{
-  background:#00ff22;
-  border:none;
-  color:#111827;
-  padding:.25rem .5rem;
-  border-radius:4px;
-  cursor:pointer;
-}
-</style>
-  <p>Everything below is ready to copy-paste from <code>assets/</code>.</p>
 
-  <ol>
-    <li>
-      <a href="assets/README.md" download>
-        README.md
-      </a> — full walk-through & quick-start guide.
-    </li>
-    <li>
-      <a href="assets/flake.nix" download>
-        flake.nix
-      </a> — NixOS dev-shell with pinned Terraform, kubectl, Argo CD CLI, Docker.
-    </li>
-    <li>
-      <a href="assets/main.tf" download>
-        main.tf
-      </a> — Terraform plan to spin up an EKS cluster (swap provider blocks for GCP/Azure).
-    </li>
-    <li>
-      <a href="assets/argocd-app.yaml" download>
-        argocd-app.yaml
-      </a> — Argo CD Application that bootstraps Gatekeeper in <code>gatekeeper-system</code>.
-    </li>
-    <li>
-      <a href="assets/constraint-template.yaml" download>
-        constraint-template.yaml
-      </a> — OPA Gatekeeper template that rejects any container image tagged <code>:latest</code>.
-    </li>
-  </ol>
-</section>
-<!-- ===== /Assets ===== -->
+  <section id="stack-assets">
+    <h3>Grab the configs</h3>
+    <button id="copyBtn">📋 Copy URLs</button>
+    <p>Everything below is ready to copy-paste from <code>assets/</code>.</p>
+    <ol>
+      <li><a href="assets/README.md" download>README.md</a> — full walk-through &amp; quick-start guide.</li>
+      <li><a href="assets/flake.nix" download>flake.nix</a> — NixOS dev-shell with pinned Terraform, kubectl, Argo CD CLI, Docker.</li>
+      <li><a href="assets/main.tf" download>main.tf</a> — Terraform plan to spin up an EKS cluster (swap provider blocks for GCP/Azure).</li>
+      <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a> — Argo CD Application that bootstraps Gatekeeper in <code>gatekeeper-system</code>.</li>
+      <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a> — OPA Gatekeeper template that rejects any container image tagged <code>:latest</code>.</li>
+    </ol>
+  </section>
+
   <hr>
+
   <h2>7. The Bigger Picture</h2>
   <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
-    When everything is code, knowledge lives in the repo, not in someone’s head.<br>
-    That means faster onboarding, fearless refactors, and - best of all - Friday deploys that don’t ruin weekends.</p>
+     When everything is code, knowledge lives in the repo, not in someone’s head.<br>
+     That means faster onboarding, fearless refactors, and—best of all—Friday deploys that don’t ruin weekends.</p>
   <p><strong>Welcome to the Declared World:</strong> where the robots do the toil, and we get back to building great games.</p>
-    <hr>
-  <p style="font-size:0.9em;color:#9ca3af;">
-    © 2025 Jonathan McGuinness · 
-  </p>
+
+  <hr>
+  <p style="font-size:.9em;color:#9ca3af;">© 2025 Jonathan McGuinness</p>
+
+  <!-- tiny inline script only for the copy button – no impact on SVG -->
+  <script>
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const urls = Array.from(document.querySelectorAll('#stack-assets a'))
+                       .map(a => a.href).join('\n');
+      navigator.clipboard.writeText(urls).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.textContent = '📋 Copy URLs', 1500);
+      });
+    });
+  </script>
 </body>
 </html>
