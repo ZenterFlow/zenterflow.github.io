@@ -1,170 +1,381 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>From Snowflake Servers to GitOps Nirvana</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A beginner-friendly tour of the declarative stack that actually runs itself.">
-  <meta name="keywords" content="GitOps,NixOS,Kubernetes,ArgoCD,Terraform,Docker,DSPy,OPA">
-  <meta name="author" content="Jonathan McGuinness">
-  <meta name="theme-color" content="#111827">
-  <meta property="og:title" content="From Snowflake Servers to GitOps Nirvana">
-  <meta property="og:description" content="A beginner-friendly tour of 8 open-source tools that turn a git push into a zero-downtime deploy.">
-  <meta property="og:image" content="https://yourdomain.com/images/og-card.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <title>From Snowflake Servers to GitOps Nirvana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A beginner-friendly tour of the declarative stack that actually runs itself."
+    />
+    <meta
+      name="keywords"
+      content="GitOps,NixOS,Kubernetes,ArgoCD,Terraform,Docker,DSPy,OPA"
+    />
+    <meta name="author" content="Jonathan McGuinness" />
+    <meta name="theme-color" content="#111827" />
+    <meta
+      property="og:title"
+      content="From Snowflake Servers to GitOps Nirvana"
+    />
+    <meta
+      property="og:description"
+      content="A beginner-friendly tour of 8 open-source tools that turn a git push into a zero-downtime deploy."
+    />
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/og-card.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
+  </head>
 
-<body>
-  <h1>From Snowflake Servers to GitOps Nirvana</h1>
-  <p class="tagline">
-  <em>8 open-source tools you can combine so that <strong>git push</strong> deploys your entire stack.</em>
-  </p>
-  
-  <!-- paragraph with per-link copy buttons -->
-<p>
-  You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure.<br>
-  Today I’d like to walk you—step by step—through why these concepts exist and how a small constellation of tools
-  (<a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a>,
-   <a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a>,
-   <a href="https://docker.com/" target="_blank" rel="noopener">Docker</a>,
-   <a href="https://developer.hashicorp.com/terraform/" target="_blank" rel="noopener">Terraform</a>,
-   <a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>,
-   <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" rel="noopener">ArgoCD</a>,
-   <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>,
-   and <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a>)
-  fit together to create a platform that deploys itself every time you hit <i>merge</i>.
-  <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">
-  <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-    <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-  </svg>
-  All
-</button>
-</p>
-  <details class="toc">
-  <summary>Quick tool map (click to open)</summary>
-  <table border="1" cellpadding="6" cellspacing="0">
-  <tr>
-    <td><a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a></td>
-    <td><a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a></td>
-    <td><a href="https://docker.com/" target="_blank" rel="noopener">Docker</a></td>
-    <td><a href="https://developer.hashicorp.com/terraform/" target="_blank" rel="noopener">Terraform</a></td>
-    <td><a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a></td>
-    <td><a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" rel="noopener">ArgoCD</a></td>
-    <td><a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a></td>
-    <td><a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a></td>
-  </tr>
-</table>
+  <body>
+    <h1>From Snowflake Servers to GitOps Nirvana</h1>
+    <p class="tagline">
+      <em
+        >8 open-source tools you can combine so that
+        <strong>git push</strong> deploys your entire stack.</em
+      >
+    </p>
 
-</details>
+    <!-- paragraph with per-link copy buttons -->
+    <p>
+      You’ve probably heard the buzzwords: GitOps, NoOps, immutable
+      infrastructure.<br />
+      Today I’d like to walk you—step by step—through why these concepts exist
+      and how a small constellation of tools (<a
+        href="https://git-scm.com/"
+        target="_blank"
+        rel="noopener"
+        >Git</a
+      >, <a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a>,
+      <a href="https://docker.com/" target="_blank" rel="noopener">Docker</a>,
+      <a
+        href="https://developer.hashicorp.com/terraform/"
+        target="_blank"
+        rel="noopener"
+        >Terraform</a
+      >,
+      <a href="https://kubernetes.io/" target="_blank" rel="noopener"
+        >Kubernetes</a
+      >,
+      <a
+        href="https://argo-cd.readthedocs.io/en/stable/"
+        target="_blank"
+        rel="noopener"
+        >ArgoCD</a
+      >, <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>, and
+      <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener"
+        >OPA</a
+      >) fit together to create a platform that deploys itself every time you
+      hit <i>merge</i>.
+      <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">
+        <svg
+          class="copy-icon"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <rect
+            x="3"
+            y="3"
+            width="10"
+            height="10"
+            rx="1"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+          <rect
+            x="1"
+            y="1"
+            width="10"
+            height="10"
+            rx="1"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+        </svg>
+        All
+      </button>
+    </p>
+    <details class="toc">
+      <summary>Quick tool map (click to open)</summary>
+      <table border="1" cellpadding="6" cellspacing="0">
+        <tr>
+          <td>
+            <a href="https://git-scm.com/" target="_blank" rel="noopener"
+              >Git</a
+            >
+          </td>
+          <td>
+            <a href="https://nixos.org/" target="_blank" rel="noopener"
+              >NixOS</a
+            >
+          </td>
+          <td>
+            <a href="https://docker.com/" target="_blank" rel="noopener"
+              >Docker</a
+            >
+          </td>
+          <td>
+            <a
+              href="https://developer.hashicorp.com/terraform/"
+              target="_blank"
+              rel="noopener"
+              >Terraform</a
+            >
+          </td>
+          <td>
+            <a href="https://kubernetes.io/" target="_blank" rel="noopener"
+              >Kubernetes</a
+            >
+          </td>
+          <td>
+            <a
+              href="https://argo-cd.readthedocs.io/en/stable/"
+              target="_blank"
+              rel="noopener"
+              >ArgoCD</a
+            >
+          </td>
+          <td>
+            <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>
+          </td>
+          <td>
+            <a
+              href="https://www.openpolicyagent.org/"
+              target="_blank"
+              rel="noopener"
+              >OPA</a
+            >
+          </td>
+        </tr>
+      </table>
+    </details>
 
-  <!-- rest of your article -->
-  <h2>1. The Problem We’re Solving</h2>
-  <p>In the old world, a server was a pet: lovingly hand-fed config files, patched on Sundays, and inevitably different from every other server. The result?</p>
-  <ul>
-    <li>“It works on my machine!”</li>
-    <li>Snow-flake drift and 3 a.m. pages.</li>
-    <li>Scaling = more pets.</li>
-  </ul>
+    <!-- rest of your article -->
+    <h2>1. The Problem We’re Solving</h2>
+    <p>
+      In the old world, a server was a pet: lovingly hand-fed config files,
+      patched on Sundays, and inevitably different from every other server. The
+      result?
+    </p>
+    <ul>
+      <li>“It works on my machine!”</li>
+      <li>Snow-flake drift and 3 a.m. pages.</li>
+      <li>Scaling = more pets.</li>
+    </ul>
 
-  <h2>2. The North Star: Everything as Code</h2>
-  <p>Instead of pets, we want cattle - identical, replaceable, and defined in text files that live in Git.<br>
-  If Git is the single source of truth, the rest of the stack becomes a conveyor belt that turns that truth into running software.</p>
+    <h2>2. The North Star: Everything as Code</h2>
+    <p>
+      Instead of pets, we want cattle - identical, replaceable, and defined in
+      text files that live in Git.<br />
+      If Git is the single source of truth, the rest of the stack becomes a
+      conveyor belt that turns that truth into running software.
+    </p>
 
-  <h2>3. The Cast of Characters and Their Jobs</h2>
-<details open class="tools">
-  <summary>Full tool map (click to open)</summary>
-  
-  <table border="1" cellpadding="8" style="border-collapse:collapse;">
-    <thead><tr><th>Tool</th><th>One-Sentence Job</th><th>Why It Matters</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Git</strong></td><td>The single source-of-truth for every line of code and config.</td><td>Immutable history + pull-requests = collaboration without chaos.</td></tr>
-      <tr><td><strong>NixOS</strong></td><td>An entire Linux distro expressed in one declarative file.</td><td>Reinstalls laptop or 1 000-server fleet with <code>nixos-rebuild</code>.</td></tr>
-      <tr><td><strong>Terraform</strong></td><td>Describe cloud resources (VPCs, disks, IAM) in HCL.</td><td>Re-creates an entire region from scratch in 15 min after a coffee spill.</td></tr>
-      <tr><td><strong>Docker</strong></td><td>Bundle the app and its libraries into an immutable image.</td><td>Same artifact runs on your Mac, in CI, and in prod.</td></tr>
-      <tr><td><strong>Argo CD</strong></td><td>A robot that watches Git and makes Kubernetes match it.</td><td>Manual <code>kubectl apply</code> is now a pull-request review.</td></tr>
-      <tr><td><strong>Kubernetes</strong></td><td>The planet-scale scheduler that keeps those containers healthy.</td><td>Auto-heals, scales, and rolls out with zero downtime.</td></tr>
-      <tr><td><strong>DSPy</strong></td><td>Prompt-engineering as typed, testable code.</td><td>Turns LLM prompts into reproducible pipelines.</td></tr>
-      <tr><td><strong>OPA / Kyverno</strong></td><td>Policy-as-code gatekeepers for every API call.</td><td>Blocks <code>:latest</code> images or unencrypted buckets before they deploy.</td></tr>
-    </tbody>
-  </table>
+    <h2>3. The Cast of Characters and Their Jobs</h2>
+    <details open class="tools">
+      <summary>Full tool map (click to open)</summary>
 
-</details>
-  
+      <table border="1" cellpadding="8" style="border-collapse: collapse">
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>One-Sentence Job</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Git</strong></td>
+            <td>
+              The single source-of-truth for every line of code and config.
+            </td>
+            <td>
+              Immutable history + pull-requests = collaboration without chaos.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>NixOS</strong></td>
+            <td>An entire Linux distro expressed in one declarative file.</td>
+            <td>
+              Reinstalls laptop or 1 000-server fleet with
+              <code>nixos-rebuild</code>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Terraform</strong></td>
+            <td>Describe cloud resources (VPCs, disks, IAM) in HCL.</td>
+            <td>
+              Re-creates an entire region from scratch in 15 min after a coffee
+              spill.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Docker</strong></td>
+            <td>Bundle the app and its libraries into an immutable image.</td>
+            <td>Same artifact runs on your Mac, in CI, and in prod.</td>
+          </tr>
+          <tr>
+            <td><strong>Argo CD</strong></td>
+            <td>A robot that watches Git and makes Kubernetes match it.</td>
+            <td>
+              Manual <code>kubectl apply</code> is now a pull-request review.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Kubernetes</strong></td>
+            <td>
+              The planet-scale scheduler that keeps those containers healthy.
+            </td>
+            <td>Auto-heals, scales, and rolls out with zero downtime.</td>
+          </tr>
+          <tr>
+            <td><strong>DSPy</strong></td>
+            <td>Prompt-engineering as typed, testable code.</td>
+            <td>Turns LLM prompts into reproducible pipelines.</td>
+          </tr>
+          <tr>
+            <td><strong>OPA / Kyverno</strong></td>
+            <td>Policy-as-code gatekeepers for every API call.</td>
+            <td>
+              Blocks <code>:latest</code> images or unencrypted buckets before
+              they deploy.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </details>
 
-  <h2>4. How the Characters relate to Each Other</h2>
-  <p>  <!-- external SVG as image -->
-  <img src="/images/DeclarativeArchitectureMermaidChart-Dark.svg" alt="Declarative GitOps workflow" title="Right click to open full image" style="width:100%;height:auto;border-radius:6px;border:1px solid #374151;">
-    <p style="margin-top:.25rem;font-size:.8em;color:#9ca3af;">
-  💡 Press <kbd>Ctrl</kbd> + <kbd>+</kbd> / <kbd>-</kbd>, or pinch-zoom on mobile to enlarge the diagram.  Right Click to Open Image in New Tab.
-</p>
-    
-  <h2>5. A Day in the Life of a Change</h2>
-  <p>Let’s add a new feature: “Show real-time in-game leaderboards”.</p>
-  <ol>
-    <li><strong>Code</strong>
-      <ul>
-        <li>Write the leaderboard service in Go.</li>
-        <li>Add a DSPy pipeline to pre-aggregate stats.</li>
-        <li>Commit everything to git.</li>
-      </ul>
-    </li>
-    <li><strong>CI Gate</strong>
-      <ul>
-        <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
-        <li>Terraform dry-run shows a new Redis cache.</li>
-        <li>Tests pass → image is signed & pushed.</li>
-      </ul>
-    </li>
-    <li><strong>GitOps Sync</strong>
-      <ul>
-        <li>Argo CD detects the new commit hash.</li>
-        <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
-        <li>OPA policy ensures the service can’t talk to the payments DB.</li>
-      </ul>
-    </li>
-    <li><strong>Observe</strong>
-      <ul>
-        <li>Prometheus sees p95 latency drop.</li>
-        <li>Grafana dashboard auto-updates.</li>
-        <li>No humans touched a server.</li>
-      </ul>
-    </li>
-  </ol>
+    <h2>4. How the Characters relate to Each Other</h2>
+    <p>
+      <!-- external SVG as image -->
+      <img
+        src="/images/DeclarativeArchitectureMermaidChart-Dark.svg"
+        alt="Declarative GitOps workflow"
+        title="Right click to open full image"
+        style="
+          width: 100%;
+          height: auto;
+          border-radius: 6px;
+          border: 1px solid #374151;
+        "
+      />
+    </p>
 
-  <h2>6. Beginner Take-aways</h2>
-  <ul>
-    <li>Start small: Put one service in Docker, store its manifest in Git, and let Argo CD sync it.</li>
-    <li>Lean on NixOS for dev laptops - <code>nix develop</code> gives the exact same tools as prod.</li>
-    <li>Policies early: A 15-line OPA rule today prevents a 3 a.m. breach tomorrow.</li>
-    <li>Celebrate merges: Every green PR is a fully tested, policy-compliant, zero-downtime release.</li>
-  </ul>
+    <p style="margin-top: 0.25rem; font-size: 0.8em; color: #9ca3af">
+      💡 Press <kbd>Ctrl</kbd> + <kbd>+</kbd> / <kbd>-</kbd>, or pinch-zoom on
+      mobile to enlarge the diagram. Right Click to Open Image in New Tab.
+    </p>
 
-  <!-- assets list + copy button -->
-<!-- ===== Grab the configs ===== -->
-<section id="stack-assets">
-  <h3>📦 Grab the configs</h3>
-  <button onclick="copyAssets()" class="copy-btn">
-    <svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-      <rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/>
-    </svg>
-    Copy URLs
-  </button>
+    <h2>5. A Day in the Life of a Change</h2>
+    <p>Let’s add a new feature: “Show real-time in-game leaderboards”.</p>
+    <ol>
+      <li>
+        <strong>Code</strong>
+        <ul>
+          <li>Write the leaderboard service in Go.</li>
+          <li>Add a DSPy pipeline to pre-aggregate stats.</li>
+          <li>Commit everything to git.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>CI Gate</strong>
+        <ul>
+          <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
+          <li>Terraform dry-run shows a new Redis cache.</li>
+          <li>Tests pass → image is signed & pushed.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>GitOps Sync</strong>
+        <ul>
+          <li>Argo CD detects the new commit hash.</li>
+          <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
+          <li>OPA policy ensures the service can’t talk to the payments DB.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Observe</strong>
+        <ul>
+          <li>Prometheus sees p95 latency drop.</li>
+          <li>Grafana dashboard auto-updates.</li>
+          <li>No humans touched a server.</li>
+        </ul>
+      </li>
+    </ol>
 
-  <ul style="padding-left: 0;">
+    <h2>6. Beginner Take-aways</h2>
+    <ul>
+      <li>
+        Start small: Put one service in Docker, store its manifest in Git, and
+        let Argo CD sync it.
+      </li>
+      <li>
+        Lean on NixOS for dev laptops - <code>nix develop</code> gives the exact
+        same tools as prod.
+      </li>
+      <li>
+        Policies early: A 15-line OPA rule today prevents a 3 a.m. breach
+        tomorrow.
+      </li>
+      <li>
+        Celebrate merges: Every green PR is a fully tested, policy-compliant,
+        zero-downtime release.
+      </li>
+    </ul>
 
-  <!-- README.md -->
-  <li class="file-block">
-    <div class="file-header">
-      <a href="assets/README.md" download>⬇ Download README.md</a>
-      <details>
-        <summary>Show Code</summary>
-        <div class="code-container">
-          <button class="copy-btn" data-target="file-1">Copy</button>
-          <pre><code id="file-1" class="language-markdown"># Reproducible Stack in 5 Steps
+    <!-- assets list + copy button -->
+    <!-- ===== Grab the configs ===== -->
+    <section id="stack-assets">
+      <h3>📦 Grab the configs</h3>
+      <button onclick="copyAssets()" class="copy-btn">
+        <svg
+          class="copy-icon"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <rect
+            x="3"
+            y="3"
+            width="10"
+            height="10"
+            rx="1"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+          <rect
+            x="1"
+            y="1"
+            width="10"
+            height="10"
+            rx="1"
+            stroke="currentColor"
+            stroke-width="1.4"
+          />
+        </svg>
+        Copy URLs
+      </button>
+
+      <ul style="padding-left: 0">
+        <!-- README.md -->
+        <li class="file-block">
+          <div class="file-header">
+            <a href="assets/README.md" download>⬇ Download README.md</a>
+            <details>
+              <summary>Show Code</summary>
+              <div class="code-container">
+                <button class="copy-btn" data-target="file-1">Copy</button>
+                <pre><code id="file-1" class="language-markdown"># Reproducible Stack in 5 Steps
 
 | Step | Tech        | One-liner Purpose                        |
 |------|-------------|------------------------------------------|
@@ -180,20 +391,20 @@
 3. `kubectl apply -f argocd-app.yaml` – bootstraps Argo CD.  
 4. `kubectl apply -f constraint-template.yaml` – sample “no latest tag” policy.  
 </code></pre>
-        </div>
-      </details>
-    </div>
-  </li>
+              </div>
+            </details>
+          </div>
+        </li>
 
-  <!-- flake.nix -->
-  <li class="file-block">
-    <div class="file-header">
-      <a href="assets/flake.nix" download>⬇ Download flake.nix</a>
-      <details>
-        <summary>Show Code</summary>
-        <div class="code-container">
-          <button class="copy-btn" data-target="file-2">Copy</button>
-          <pre><code id="file-2" class="language-nix">{
+        <!-- flake.nix -->
+        <li class="file-block">
+          <div class="file-header">
+            <a href="assets/flake.nix" download>⬇ Download flake.nix</a>
+            <details>
+              <summary>Show Code</summary>
+              <div class="code-container">
+                <button class="copy-btn" data-target="file-2">Copy</button>
+                <pre><code id="file-2" class="language-nix">{
   description = "Reproducible Dev Shell";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -213,20 +424,20 @@
         };
       });
 }</code></pre>
-        </div>
-      </details>
-    </div>
-  </li>
+              </div>
+            </details>
+          </div>
+        </li>
 
-  <!-- main.tf -->
-  <li class="file-block">
-    <div class="file-header">
-      <a href="assets/main.tf" download>⬇ Download main.tf</a>
-      <details>
-        <summary>Show Code</summary>
-        <div class="code-container">
-          <button class="copy-btn" data-target="file-3">Copy</button>
-          <pre><code id="file-3" class="language-hcl">provider "kubernetes" {
+        <!-- main.tf -->
+        <li class="file-block">
+          <div class="file-header">
+            <a href="assets/main.tf" download>⬇ Download main.tf</a>
+            <details>
+              <summary>Show Code</summary>
+              <div class="code-container">
+                <button class="copy-btn" data-target="file-3">Copy</button>
+                <pre><code id="file-3" class="language-hcl">provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
@@ -235,20 +446,22 @@ resource "kubernetes_namespace" "example" {
     name = "example-namespace"
   }
 }</code></pre>
-        </div>
-      </details>
-    </div>
-  </li>
+              </div>
+            </details>
+          </div>
+        </li>
 
-  <!-- argocd-app.yaml -->
-  <li class="file-block">
-    <div class="file-header">
-      <a href="assets/argocd-app.yaml" download>⬇ Download argocd-app.yaml</a>
-      <details>
-        <summary>Show Code</summary>
-        <div class="code-container">
-          <button class="copy-btn" data-target="file-4">Copy</button>
-          <pre><code id="file-4" class="language-yaml">apiVersion: argoproj.io/v1alpha1
+        <!-- argocd-app.yaml -->
+        <li class="file-block">
+          <div class="file-header">
+            <a href="assets/argocd-app.yaml" download
+              >⬇ Download argocd-app.yaml</a
+            >
+            <details>
+              <summary>Show Code</summary>
+              <div class="code-container">
+                <button class="copy-btn" data-target="file-4">Copy</button>
+                <pre><code id="file-4" class="language-yaml">apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: example-app
@@ -263,20 +476,22 @@ spec:
   project: default
   syncPolicy:
     automated: {}</code></pre>
-        </div>
-      </details>
-    </div>
-  </li>
+              </div>
+            </details>
+          </div>
+        </li>
 
-  <!-- constraint-template.yaml -->
-  <li class="file-block">
-    <div class="file-header">
-      <a href="assets/constraint-template.yaml" download>⬇ Download constraint-template.yaml</a>
-      <details>
-        <summary>Show Code</summary>
-        <div class="code-container">
-          <button class="copy-btn" data-target="file-5">Copy</button>
-          <pre><code id="file-5" class="language-yaml">apiVersion: templates.gatekeeper.sh/v1beta1
+        <!-- constraint-template.yaml -->
+        <li class="file-block">
+          <div class="file-header">
+            <a href="assets/constraint-template.yaml" download
+              >⬇ Download constraint-template.yaml</a
+            >
+            <details>
+              <summary>Show Code</summary>
+              <div class="code-container">
+                <button class="copy-btn" data-target="file-5">Copy</button>
+                <pre><code id="file-5" class="language-yaml">apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: k8sallowedrepos
@@ -294,26 +509,29 @@ spec:
           input.review.object.spec.containers[_].image != "allowed/repo"
           msg := "Image repository is not allowed"
         }</code></pre>
-        </div>
-      </details>
-    </div>
-  </li>
+              </div>
+            </details>
+          </div>
+        </li>
+      </ul>
+    </section>
 
-</ul>
+    <h2>7. The Bigger Picture</h2>
+    <p>
+      Declarative, Git-driven stacks aren’t tools; they’re a culture.<br />
+      When everything is code, knowledge lives in the repo, not in someone’s
+      head.<br />
+      That means faster onboarding, fearless refactors, and - best of all -
+      Friday deploys that don’t ruin weekends.
+    </p>
+    <p>
+      <strong>Welcome to the Declared World: </strong>where the robots do the
+      toil, and we get back to building great games.
+    </p>
 
+    <!-- JavaScript for copy buttons -->
 
-
-</section>
-
-  <h2>7. The Bigger Picture</h2>
-  <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
-     When everything is code, knowledge lives in the repo, not in someone’s head.<br>
-     That means faster onboarding, fearless refactors, and - best of all - Friday deploys that don’t ruin weekends.</p>
-  <p><strong>Welcome to the Declared World: </strong>where the robots do the toil, and we get back to building great games.</p>
-
-  <!-- JavaScript for copy buttons -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script src="scripts.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="scripts.js"></script>
+  </body>
 </html>
