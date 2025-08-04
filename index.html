@@ -43,9 +43,6 @@
       color:#fff; /* white rectangles on dark bg */
       vertical-align:middle;
     }
-    @media (min-width: 1024px) {
-      .toc { position: sticky; top: 2rem; }
-    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -188,29 +185,28 @@
   <ol>
     <li><a href="assets/README.md" download>README.md</a></li>
     <li><a href="assets/flake.nix" download><details>
-  <summary>flake.nix (click to expand)</summary>
-  <pre><code class="language-nix">{
-  description = "Reproducible Dev Shell";
-
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system};
-      in {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            terraform
-            kubectl
-            argocd
-            docker
-          ];
-        };
-      });
-}</code></pre>
-</details></a></li>
+      <summary>flake.nix (click to expand)</summary>
+      <pre><code class="language-nix">{
+      description = "Reproducible Dev Shell";
     
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+      inputs.flake-utils.url = "github:numtide/flake-utils";
+    
+      outputs = { self, nixpkgs, flake-utils }:
+        flake-utils.lib.eachDefaultSystem (system:
+          let pkgs = nixpkgs.legacyPackages.${system};
+          in {
+            devShells.default = pkgs.mkShell {
+              packages = with pkgs; [
+                terraform
+                kubectl
+                argocd
+                docker
+              ];
+            };
+          });
+      }</code></pre>
+      </details></a></li>
     <li><a href="assets/main.tf" download>main.tf</a></li>
     <li><a href="assets/argocd-app.yaml" download>argocd-app.yaml</a></li>
     <li><a href="assets/constraint-template.yaml" download>constraint-template.yaml</a></li>
