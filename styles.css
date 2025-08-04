@@ -1,3 +1,13 @@
+/* Element selectors in alphabetical order */
+
+a {
+  color: #00ff00;
+}
+
+a:visited {
+  color: #22c55e;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
     sans-serif;
@@ -8,95 +18,121 @@ body {
   color: #ffffff;
   background: #111827;
 }
+
+code {
+  background: #1f2937;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+}
+
 h1,
 h2 {
   color: #60a5fa;
 }
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+pre {
+  background: #1f2937;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 1rem 0;
 }
+
 th,
 td {
   padding: 0.5rem;
   border: 1px solid #374151;
   text-align: left;
 }
-code {
-  background: #1f2937;
-  padding: 0.15rem 0.35rem;
-  border-radius: 3px;
-}
-pre {
-  background: #1f2937;
-  padding: 1rem;
-  overflow-x: auto;
-}
-a {
-  color: #00ff00;
-}
-a:visited {
-  color: #22c55e;
-}
-img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-}
-.assets-list {
-  padding-left: 0;
-}
-/* copy buttons */
-.copy-btn {
-  color: #fff; /* white text */
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-left: 0.15rem;
-  transition: transform 0.1s;
-}
-.copy-btn:hover {
-  transform: scale(1.15);
-}
-.copy-icon {
-  color: #fff; /* white rectangles on dark bg */
-  vertical-align: middle;
-}
 
 ul {
   list-style: none;
   margin: 0;
 }
+
+/* Class selectors in alphabetical order */
+.assets-list {
+  padding-left: 0;
+}
+
+.code-container {
+  position: relative;
+  margin-top: 8px;
+}
+
+/* copy buttons */
+/* Copy Button */
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #333;
+  color: #fff; /* white text */
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  margin-left: 0.15rem;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.copy-btn:hover {
+  transform: scale(1.15);
+  background: #444;
+}
+
+.copy-icon {
+  color: #fff;
+  /* white rectangles on dark bg */
+  vertical-align: middle;
+}
+
+details summary {
+  cursor: pointer;
+  color: #60a5fa;
+  font-size: 0.9em;
+}
+
 .diagram-img {
   width: 100%;
   height: auto;
   border-radius: 6px;
   border: 1px solid #374151;
 }
+
+.diagram-note {
+  margin-top: 0.25rem;
+  font-size: 0.8em;
+  color: #9ca3af;
+}
+
 .file-block {
   margin-bottom: 1.5em;
 }
+
 .file-header {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
 }
+
 .file-header a {
   color: #60a5fa;
   text-decoration: none;
   font-weight: bold;
 }
-details summary {
-  cursor: pointer;
-  color: #60a5fa;
-  font-size: 0.9em;
-}
-.code-container {
-  position: relative;
-  margin-top: 8px;
-}
+
 pre {
   background: #1e1e1e;
   color: #d4d4d4;
@@ -106,26 +142,7 @@ pre {
   margin: 0;
   font-size: 0.9em;
 }
-.copy-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: #333;
-  color: #fff;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 0.8em;
-  cursor: pointer;
-}
-.copy-btn:hover {
-  background: #444;
-}
+
 .tools-table {
   border-collapse: collapse;
-}
-.diagram-note {
-  margin-top: 0.25rem;
-  font-size: 0.8em;
-  color: #9ca3af;
 }
