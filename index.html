@@ -31,6 +31,11 @@
   <p>You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you - step by step - through why these concepts exist and how a small constellation of tools (NixOS, Terraform, Docker, Argo CD, Kubernetes, DSPy, and a pinch of policy-as-code) fit together to create a platform that deploys itself every time you hit <em>merge</em>.</p>
   <h2>1. The Problem We’re Solving</h2>
   <p>In the old world, a server was a pet: lovingly hand-fed config files, patched on Sundays, and inevitably different from every other server. The result?</p>
+  <ul>
+    <li>“It works on my machine!”</li>
+    <li>Snow-flake drift and 3 a.m. pages.</li>
+    <li>Scaling = more pets.</li>
+  </ul>
   <!-- IMAGE 1 -->
   <figure>
     <img src="images/DeclarativeStack.jpg" alt="Diagram of declarative stack pipeline">
