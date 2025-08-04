@@ -32,3 +32,20 @@
       color:#fff; /* white rectangles on dark bg */
       vertical-align:middle;
     }
+
+
+ul { list-style: none; margin: 0; }
+.file-block { margin-bottom: 1.5em; }
+.file-header { display: flex; flex-direction: column; gap: 0.5em; }
+.file-header a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+details summary { cursor: pointer; color: #60a5fa; font-size: 0.9em; }
+.code-container { position: relative; margin-top: 8px; }
+pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 0; font-size: 0.9em; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: #333; color: #fff; border: none;
+  padding: 6px 10px; border-radius: 4px;
+  font-size: 0.8em; cursor: pointer;
+}
+.copy-btn:hover { background: #444; }
+
