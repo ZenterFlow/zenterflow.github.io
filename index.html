@@ -513,7 +513,55 @@ spec:
             </details>
           </div>
         </li>
+<li class="file-block">
+                <div class="file-header">
+                    <a href="assets/nginx-chart.tgz" download>⬇ Download Helm Chart</a>
+                    <details open>
+                        <summary>Show Code</summary>
+                        <div class="code-container">
+                            <button class="copy-btn" data-target="file-1">Copy</button>
+                            <pre><code id="file-1" class="language-yaml">apiVersion: v2
+name: nginx-chart
+description: A Helm chart for Kubernetes
+version: 0.1.0
+appVersion: "1.20"</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </li>
+            <!-- Docker Compose -->
+            <li class="file-block">
+                <div class="file-header">
+                    <a href="assets/docker-compose.yml" download>⬇ Download Docker Compose</a>
+                    <details>
+                        <summary>Show Code</summary>
+                        <div class="code-container">
+                            <button class="copy-btn" data-target="file-2">Copy</button>
+                            <pre><code id="file-2" class="language-yaml">version: '3.8'
 
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </li>
         <!-- constraint-template.yaml -->
         <li class="file-block">
           <div class="file-header">
