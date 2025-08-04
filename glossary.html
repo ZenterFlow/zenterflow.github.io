@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitOps Glossary</title>
+</head>
+<body>
+    <h1>GitOps Glossary</h1>
+    <ol>
+        <li>
+            <strong>ArgoCD</strong>
+            <p>A tool that automates the deployment of applications by continuously monitoring a Git repository and ensuring the live Kubernetes environment matches the configurations stored in Git.</p>
+        </li>
+        <li>
+            <strong>Blue-Green Deployment</strong>
+            <p>A deployment strategy where two identical environments (blue for the current version, green for the new version) are maintained, allowing updates to be tested in the green environment before switching traffic to it, minimizing downtime and risks.</p>
+        </li>
+        <li>
+            <strong>CI/CD Pipeline</strong>
+            <p>A set of automated processes (Continuous Integration and Continuous Deployment) that test, build, and deploy code changes from a Git repository to production, ensuring fast and reliable software releases.</p>
+        </li>
+        <li>
+            <strong>Docker</strong>
+            <p>A platform that packages an application and its dependencies into a lightweight, portable container, ensuring it runs consistently across different environments like a developer’s laptop or a production server.</p>
+        </li>
+        <li>
+            <strong>DSPy</strong>
+            <p>A framework for writing and testing prompts for large language models (LLMs) as code, enabling reproducible and structured AI-driven workflows within the GitOps pipeline.</p>
+        </li>
+        <li>
+            <strong>Git</strong>
+            <p>A version control system that stores code and configuration files, acting as the single source of truth for collaboration and tracking changes through commits and pull requests.</p>
+        </li>
+        <li>
+            <strong>GitOps</strong>
+            <p>A practice where all infrastructure and application configurations are stored in Git, and automated tools use these configurations to deploy and manage systems, making deployments predictable and traceable.</p>
+        </li>
+        <li>
+            <strong>Immutable Infrastructure</strong>
+            <p>A setup where servers or resources are never modified after creation; instead, they are replaced with new, identically configured versions when changes are needed, ensuring consistency.</p>
+        </li>
+        <li>
+            <strong>Kubernetes</strong>
+            <p>An open-source platform that automates the deployment, scaling, and management of containerized applications, ensuring they run reliably across multiple servers.</p>
+        </li>
+        <li>
+            <strong>NixOS</strong>
+            <p>A Linux distribution where the entire system configuration is defined in a single declarative file, allowing reproducible setups for both individual machines and large server fleets.</p>
+        </li>
+        <li>
+            <strong>NoOps</strong>
+            <p>A concept where automation eliminates most manual operations tasks, allowing developers to focus on coding while tools handle deployment and maintenance.</p>
+        </li>
+        <li>
+            <strong>OPA (Open Policy Agent)</strong>
+            <p>A tool for defining and enforcing rules (policies) as code, ensuring that configurations or deployments meet security and compliance requirements, like blocking unencrypted storage.</p>
+        </li>
+        <li>
+            <strong>Snowflake Server</strong>
+            <p>A server that is manually configured and unique, making it hard to replicate or maintain, often leading to inconsistencies and errors (contrasted with standardized, reproducible servers).</p>
+        </li>
+        <li>
+            <strong>Terraform</strong>
+            <p>A tool that allows users to define and provision cloud infrastructure (e.g., servers, networks, databases) using code written in HashiCorp Configuration Language (HCL), enabling consistent and repeatable setups.</p>
+        </li>
+    </ol>
+</body>
+</html>
