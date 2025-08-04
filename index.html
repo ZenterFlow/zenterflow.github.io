@@ -97,6 +97,41 @@
     <li><strong>Celebrate merges:</strong> Every green PR is a fully tested, policy-compliant, zero-downtime release.</li>
   </ul>
       <hr>
+  <!-- ===== Reproducible Stack Assets ===== -->
+<section id="stack-assets">
+  <h2>Grab the configs</h2>
+  <p>Everything below is ready to copy-paste from <code>assets/</code>.</p>
+
+  <ol>
+    <li>
+      <a href="assets/README.md" download>
+        README.md
+      </a> — full walk-through & quick-start guide.
+    </li>
+    <li>
+      <a href="assets/flake.nix" download>
+        flake.nix
+      </a> — NixOS dev-shell with pinned Terraform, kubectl, Argo CD CLI, Docker.
+    </li>
+    <li>
+      <a href="assets/main.tf" download>
+        main.tf
+      </a> — Terraform plan to spin up an EKS cluster (swap provider blocks for GCP/Azure).
+    </li>
+    <li>
+      <a href="assets/argocd-app.yaml" download>
+        argocd-app.yaml
+      </a> — Argo CD Application that bootstraps Gatekeeper in <code>gatekeeper-system</code>.
+    </li>
+    <li>
+      <a href="assets/constraint-template.yaml" download>
+        constraint-template.yaml
+      </a> — OPA Gatekeeper template that rejects any container image tagged <code>:latest</code>.
+    </li>
+  </ol>
+</section>
+<!-- ===== /Assets ===== -->
+  <hr>
   <h2>7. The Bigger Picture</h2>
   <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
     When everything is code, knowledge lives in the repo, not in someone’s head.<br>
