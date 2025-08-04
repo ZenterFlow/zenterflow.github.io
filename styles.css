@@ -44,6 +44,9 @@ img {
   height: auto;
   border-radius: 6px;
 }
+.assets-list {
+  padding-left: 0;
+}
 /* copy buttons */
 .copy-btn {
   color: #fff; /* white text */
