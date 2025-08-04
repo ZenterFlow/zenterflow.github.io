@@ -29,6 +29,7 @@
   <p><em>A beginner-friendly tour of the declarative stack that actually runs itself — 04 Aug 2025</em></p>
 
   <p>You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you - step by step - through why these concepts exist and how a small constellation of tools (NixOS, Terraform, Docker, Argo CD, Kubernetes, DSPy, and a pinch of policy-as-code) fit together to create a platform that deploys itself every time you hit <em>merge</em>.</p>
+      <hr>
   <h2>1. The Problem We’re Solving</h2>
   <p>In the old world, a server was a pet: lovingly hand-fed config files, patched on Sundays, and inevitably different from every other server. The result?</p>
   <ul>
@@ -36,9 +37,11 @@
     <li>Snow-flake drift and 3 a.m. pages.</li>
     <li>Scaling = more pets.</li>
   </ul>
+      <hr>
   <h2>2. The North Star: Everything as Code</h2>
   <p>Instead of pets, we want cattle - identical, replaceable, and defined in text files that live in Git.</p>
   <p>If Git is the single source of truth, the rest of the stack becomes a conveyor belt that turns that truth into running software.</p>
+      <hr>
   <h2>3. The Cast of Characters and Their Jobs</h2>
   <p>Table: A Declarative Software Stack</p>
   <!-- IMAGE 1 -->
@@ -46,6 +49,7 @@
     <img src="images/DeclarativeStack.jpg" alt="Diagram of declarative stack pipeline">
     <figcaption style="text-align:center;font-size:0.8rem;color:#9ca3af;">Table: A Declarative Software Stack</figcaption>
   </figure>
+      <hr>
   <h2>4. How the Characters relate to Each Other</h2>
   <p>Table: A Declarative Software Architecture Workflow</p>
   <!-- IMAGE 2 -->
@@ -53,6 +57,7 @@
     <img src="images/DeclarativeArchitectureMermaidChart.png" alt="Screenshot of Argo CD dashboard">
     <figcaption style="text-align:center;font-size:0.8rem;color:#9ca3af;">Fig 2. Argo CD in action (replace IMAGE-2.jpg)</figcaption>
   </figure>
+      <hr>
   <h2>5. A Day in the Life of a Change</h2>
   <p>Let’s add a new feature: “Show real-time in-game leaderboards”.</p>
   <ol>
@@ -62,9 +67,39 @@
         <li>Add a DSPy pipeline to pre-aggregate stats.</li>
         <li>Commit everything to git.</li>
       </ul>
+    <li>CI Gate</li>
+      <ul>
+        <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
+        <li>Terraform dry-run shows a new Redis cache.</li>
+        <li>Tests pass → image is signed & pushed.</li>
+      </ul>
+    <li>GitOps Sync</li>
+      <ul>
+        <li>Argo CD detects the new commit hash.</li>
+        <li>Kubernetes manifests are applied; pods roll out blue-green.</li>
+        <li>OPA policy ensures the service can’t talk to the payments DB.</li>
+      </ul>
+    <li>Observe</li>
+      <ul>
+        <li>Prometheus sees p95 latency drop.</li>
+        <li>Grafana dashboard auto-updates.</li>
+        <li>No humans touched a server.</li>
+      </ul>
   </ol>
-
-  <hr>
+      <hr>
+  <h2>Beginner Take-aways</h2>
+  <ul>
+    <li>Start small: Put one service in Docker, store its manifest in Git, and let Argo CD sync it.</li>
+    <li>Lean on NixOS for dev laptops - nix develop gives the exact same tools as prod.</li>
+    <li>Policies early: A 15-line OPA rule today prevents a 3 a.m. breach tomorrow.</li>
+    <li>Celebrate merges: Every green PR is a fully tested, policy-compliant, zero-downtime release.</li>
+  </ul>
+      <hr>
+  <h2>7. The Bigger Picture</h2>
+  <p>Declarative, Git-driven stacks aren’t tools; they’re a culture.<br>
+    When everything is code, knowledge lives in the repo, not in someone’s head.<br>
+    That means faster onboarding, fearless refactors, and - best of all - Friday deploys that don’t ruin weekends.</p>
+    <hr>
   <p style="font-size:0.9em;color:#9ca3af;">
     © 2025 Jonathan McGuinness · 
   </p>
