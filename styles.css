@@ -124,3 +124,8 @@ pre {
 .tools-table {
   border-collapse: collapse;
 }
+.diagram-note {
+  margin-top: 0.25rem;
+  font-size: 0.8em;
+  color: #9ca3af;
+}
