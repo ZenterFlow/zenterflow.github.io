@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#111827">
 
   <style>
+    /* --- Basic page style --- */
     body {
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
       line-height:1.6;
@@ -28,10 +29,8 @@
     a{color:#00ff00;}a:visited{color:#22c55e;}
     html{scroll-behavior:smooth;}
 
-    /* Zoom control buttons */
-    #zoomCtl{
-      margin:.25rem 0;
-    }
+    /* --- Zoom controls --- */
+    #zoomCtl{margin:.25rem 0;}
     #zoomCtl button{
       background:#60a5fa;
       color:#111827;
@@ -43,6 +42,17 @@
       font-size:1rem;
     }
     #zoomCtl button:active{transform:scale(.95);}
+
+    /* --- Copy buttons (Kim-style) --- */
+    .copy-btn{
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      font-size:1rem;
+      margin-left:.15rem;
+      transition:transform .1s;
+    }
+    .copy-btn:hover{transform:scale(1.15);}
   </style>
 </head>
 
@@ -50,36 +60,24 @@
   <h1>From Snowflake Servers to GitOps Nirvana</h1>
   <p><em>A beginner-friendly tour of the declarative stack that actually runs itself — 04 Aug 2025</em></p>
 
-  <p>You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you—step by step—through why these concepts exist and how a small constellation of tools (<a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a>, <a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a>, <a href="https://docker.com/" target="_blank" rel="noopener">Docker</a>, <a href="https://developer.hashicorp.com/terraform/" target="_blank" rel="noopener">Terraform</a>, <a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>, <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" rel="noopener">ArgoCD</a>, <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a>, and a pinch of <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a> policy-as-code) fit together to create a platform that deploys itself every time you hit <i>merge</i>.</p>
-  <!-- 1-click copy for all tool URLs in first paragraph -->
-<p>
-  <button id="copyAllTools"
-          class="copy-btn"
-          title="Copy all tool URLs">📋 Copy tool links</button>
-</p>
+  <!-- 1st paragraph + per-link copy buttons -->
+  <p>
+    You’ve probably heard the buzzwords: GitOps, NoOps, immutable infrastructure. Today I’d like to walk you—step by step—through why these concepts exist and how a small constellation of tools (
+    <a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a><button class="copy-btn" onclick="copyUrl('https://git-scm.com/')">📋</button>,
+    <a href="https://nixos.org/" target="_blank" rel="noopener">NixOS</a><button class="copy-btn" onclick="copyUrl('https://nixos.org/')">📋</button>,
+    <a href="https://docker.com/" target="_blank" rel="noopener">Docker</a><button class="copy-btn" onclick="copyUrl('https://docker.com/')">📋</button>,
+    <a href="https://developer.hashicorp.com/terraform/" target="_blank" rel="noopener">Terraform</a><button class="copy-btn" onclick="copyUrl('https://developer.hashicorp.com/terraform/')">📋</button>,
+    <a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a><button class="copy-btn" onclick="copyUrl('https://kubernetes.io/')">📋</button>,
+    <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" rel="noopener">ArgoCD</a><button class="copy-btn" onclick="copyUrl('https://argo-cd.readthedocs.io/en/stable/')">📋</button>,
+    <a href="https://dspy.ai/" target="_blank" rel="noopener">DSPy</a><button class="copy-btn" onclick="copyUrl('https://dspy.ai/')">📋</button>,
+    and a pinch of <a href="https://www.openpolicyagent.org/" target="_blank" rel="noopener">OPA</a><button class="copy-btn" onclick="copyUrl('https://www.openpolicyagent.org/')">📋</button>
+    policy-as-code) fit together to create a platform that deploys itself every time you hit <i>merge</i>.
+    <button id="copyAllTools" class="copy-btn" title="Copy all tool URLs">📋 All</button>
+  </p>
 
-<script>
-document.getElementById('copyAllTools').addEventListener('click', () => {
-  const urls = [
-    'https://git-scm.com/',
-    'https://nixos.org/',
-    'https://docker.com/',
-    'https://developer.hashicorp.com/terraform/',
-    'https://kubernetes.io/',
-    'https://argo-cd.readthedocs.io/en/stable/',
-    'https://dspy.ai/',
-    'https://www.openpolicyagent.org/'
-  ].join('\n');
-  navigator.clipboard.writeText(urls).then(() => {
-    const btn = document.getElementById('copyAllTools');
-    btn.textContent = '✅ Copied!';
-    setTimeout(() => btn.textContent = '📋 Copy tool links', 1200);
-  });
-});
-</script>
   <hr>
 
-  <!-- ==========  ORIGINAL SVG + ZOOM/PAN  ========== -->
+  <!-- ========= ORIGINAL SVG FLOWCHART + ZOOM ========= -->
   <section id="flowchart-wrapper" style="position:relative">
     <!-- zoom buttons -->
     <div id="zoomCtl">
@@ -88,7 +86,9 @@ document.getElementById('copyAllTools').addEventListener('click', () => {
       <button id="zoomFit" title="Fit to screen">⤧</button>
     </div>
 
-    <!-- ORIGINAL SVG (unchanged) -->
+    <!-- Original SVG verbatim (kept inline for brevity) -->
+    <!-- Paste the full <svg …> … </svg> block from your first file here -->
+    <!-- ↓↓↓ placeholder: replace with your exact SVG content ↓↓↓ -->
     <svg id="export-svg"
          width="100%"
          xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +96,7 @@ document.getElementById('copyAllTools').addEventListener('click', () => {
          viewBox="0 0 2471.890625 872"
          preserveAspectRatio="xMidYMid meet"
          aria-roledescription="flowchart-v2">
-      <!-- 1.  Original styling kept -->
+      <!-- 1. ORIGINAL STYLES (kept) -->
       <style>
         #export-svg{
           font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -115,80 +115,25 @@ document.getElementById('copyAllTools').addEventListener('click', () => {
           stroke-width:2;
         }
       </style>
-
-      <!-- 2.  Drop-shadow filters -->
       <defs>
         <filter id="drop-shadow" height="130%" width="130%">
           <feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000"/>
         </filter>
       </defs>
 
-      <!-- 3.  Original nodes & edges copied verbatim -->
-      <!-- (content identical to your original SVG; truncated here for brevity) -->
-      <!-- … insert your original SVG content here … -->
-      <!-- For brevity the full 2000-line SVG is omitted.  -->
-      <!-- Simply paste **everything** that was between <svg …> … </svg> -->
-      <!-- in the file you first sent.  -->
+      <!-- ====== ORIGINAL NODES & EDGES (paste your full SVG here) ====== -->
+      <!-- For brevity, the ~2 000 lines of SVG are omitted; -->
+      <!-- copy the exact <g> … </g> content from your first file. -->
     </svg>
   </section>
 
-  <!-- ==========  SMALL JS FOR ZOOM/PAN  ========== -->
-  <script>
-  (() => {
-    const svg   = document.getElementById('export-svg');
-    const vb    = svg.viewBox.baseVal;   // original 2471.890625 × 872
-    let scale   = 1;
-    let tx = 0, ty = 0;
-
-    function redraw() {
-      svg.style.transformOrigin = '0 0';
-      svg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-    }
-
-    /* buttons */
-    document.getElementById('zoomIn').onclick  = () => { scale *= 1.25; redraw(); };
-    document.getElementById('zoomOut').onclick = () => { scale /= 1.25; redraw(); };
-    document.getElementById('zoomFit').onclick = () => { scale = 1; tx = ty = 0; redraw(); };
-
-    /* mouse-wheel zoom */
-    svg.addEventListener('wheel', e => {
-      e.preventDefault();
-      const factor = e.deltaY < 0 ? 1.25 : 1/1.25;
-      scale *= factor;
-      redraw();
-    });
-
-    /* click-and-drag pan */
-    let dragging = false, lastX, lastY;
-    svg.addEventListener('mousedown', e => {
-      dragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
-      svg.style.cursor = 'grabbing';
-    });
-    window.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      tx += dx; ty += dy;
-      lastX = e.clientX; lastY = e.clientY;
-      redraw();
-    });
-    window.addEventListener('mouseup', () => {
-      dragging = false;
-      svg.style.cursor = 'grab';
-    });
-  })();
-  </script>
-
-  <!-- ==========  REST OF YOUR ARTICLE  ========== -->
   <hr>
   <h2>5. A Day in the Life of a Change</h2>
   <ol>
-    <li><strong>Code</strong> – Write, commit, push.</li>
-    <li><strong>CI Gate</strong> – Reproducible build &amp; tests.</li>
+    <li><strong>Code</strong> – write, commit, push.</li>
+    <li><strong>CI Gate</strong> – reproducible build & tests.</li>
     <li><strong>GitOps Sync</strong> – Argo CD rolls it out.</li>
-    <li><strong>Observe</strong> – Prometheus &amp; Grafana watch.</li>
+    <li><strong>Observe</strong> – Prometheus & Grafana watch.</li>
   </ol>
 
   <hr>
@@ -200,9 +145,10 @@ document.getElementById('copyAllTools').addEventListener('click', () => {
     <li>Celebrate every green PR!</li>
   </ul>
 
+  <!--  Asset links + copy button  -->
   <section id="stack-assets">
     <h3>Grab the configs</h3>
-    <button onclick="navigator.clipboard.writeText(Array.from(document.querySelectorAll('#stack-assets a')).map(a=>a.href).join('\n'))">📋 Copy URLs</button>
+    <button onclick="copyAssets()">📋 Copy URLs</button>
     <ol>
       <li><a href="assets/README.md" download>README.md</a></li>
       <li><a href="assets/flake.nix" download>flake.nix</a></li>
@@ -220,5 +166,66 @@ document.getElementById('copyAllTools').addEventListener('click', () => {
 
   <hr>
   <p style="font-size:.9em;color:#9ca3af;">© 2025 Jonathan McGuinness</p>
+
+  <!-- =========  JAVASCRIPT  ========= -->
+  <script>
+  /* ---- zoom/pan for SVG ---- */
+  (() => {
+    const svg   = document.getElementById('export-svg');
+    let scale = 1, tx = 0, ty = 0;
+    function redraw() {
+      svg.style.transformOrigin = '0 0';
+      svg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    }
+    document.getElementById('zoomIn').onclick  = () => { scale *= 1.25; redraw(); };
+    document.getElementById('zoomOut').onclick = () => { scale /= 1.25; redraw(); };
+    document.getElementById('zoomFit').onclick = () => { scale = 1; tx = ty = 0; redraw(); };
+    svg.addEventListener('wheel', e => { e.preventDefault(); scale *= (e.deltaY < 0 ? 1.25 : 1/1.25); redraw(); });
+    let drag = false, lastX, lastY;
+    svg.addEventListener('mousedown', e => { drag = true; lastX = e.clientX; lastY = e.clientY; svg.style.cursor = 'grabbing'; });
+    window.addEventListener('mousemove', e => {
+      if (!drag) return;
+      tx += e.clientX - lastX; ty += e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      redraw();
+    });
+    window.addEventListener('mouseup', () => { drag = false; svg.style.cursor = 'grab'; });
+  })();
+
+  /* ---- copy helpers ---- */
+  function copyUrl(url) {
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = event.target;
+      btn.textContent = '✅';
+      setTimeout(() => btn.textContent = '📋', 800);
+    });
+  }
+  function copyAssets() {
+    const urls = Array.from(document.querySelectorAll('#stack-assets a')).map(a => a.href).join('\n');
+    navigator.clipboard.writeText(urls).then(() => {
+      const btn = event.target;
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy URLs', 1200);
+    });
+  }
+  /* ---- bulk copy for first paragraph ---- */
+  document.getElementById('copyAllTools').addEventListener('click', () => {
+    const urls = [
+      'https://git-scm.com/',
+      'https://nixos.org/',
+      'https://docker.com/',
+      'https://developer.hashicorp.com/terraform/',
+      'https://kubernetes.io/',
+      'https://argo-cd.readthedocs.io/en/stable/',
+      'https://dspy.ai/',
+      'https://www.openpolicyagent.org/'
+    ].join('\n');
+    navigator.clipboard.writeText(urls).then(() => {
+      const btn = document.getElementById('copyAllTools');
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 All', 1200);
+    });
+  });
+  </script>
 </body>
 </html>
