@@ -483,7 +483,39 @@ resource "kubernetes_namespace" "example" {
             </details>
           </div>
         </li>
+<!-- Docker Compose -->
+            <li class="file-block">
+                <div class="file-header">
+                    <a href="assets/docker-compose.yml" download>⬇ Download Docker Compose</a>Docker for Containerisation of Systems
+                    <details>
+                        <summary>Show Code</summary>
+                        <div class="code-container">
+                            <button class="copy-btn" data-target="file-2">Copy</button>
+                            <pre><code id="file-2" class="language-yaml">version: '3.8'
 
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </li>
         <!-- argocd-app.yaml -->
         <li class="file-block">
           <div class="file-header">
@@ -529,39 +561,7 @@ appVersion: "1.20"</code></pre>
                     </details>
                 </div>
             </li>
-            <!-- Docker Compose -->
-            <li class="file-block">
-                <div class="file-header">
-                    <a href="assets/docker-compose.yml" download>⬇ Download Docker Compose</a>Docker for Containerisation of Systems
-                    <details>
-                        <summary>Show Code</summary>
-                        <div class="code-container">
-                            <button class="copy-btn" data-target="file-2">Copy</button>
-                            <pre><code id="file-2" class="language-yaml">version: '3.8'
-
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./html:/usr/share/nginx/html
-    depends_on:
-      - redis
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-volumes:
-  redis_data:</code></pre>
-                        </div>
-                    </details>
-                </div>
-            </li>
+            
         <!-- constraint-template.yaml -->
         <li class="file-block">
           <div class="file-header">
