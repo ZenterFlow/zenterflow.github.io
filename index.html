@@ -45,6 +45,61 @@
   <p>If Git is the <i>single source of truth</i>, the rest of the stack becomes a conveyor belt that turns that truth into running software.</p>
       <hr>
   <h2>3. The Cast of Characters and Their Jobs</h2>
+<section>
+  <h2>Reproducible Stack Cheat-Sheet</h2>
+  <table border="1" cellpadding="8" style="border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>One-Sentence Job</th>
+        <th>Why It Matters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Git</strong></td>
+        <td>The single source-of-truth for every line of code and config.</td>
+        <td>Immutable history + pull-requests = collaboration without chaos.</td>
+      </tr>
+      <tr>
+        <td><strong>NixOS</strong></td>
+        <td>An entire Linux distro expressed in one declarative file.</td>
+        <td>Reinstalls laptop or 1 000-server fleet with <code>nixos-rebuild</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Terraform</strong></td>
+        <td>Describe cloud resources (VPCs, disks, IAM) in HCL.</td>
+        <td>Re-creates an entire region from scratch in 15 min after a coffee spill.</td>
+      </tr>
+      <tr>
+        <td><strong>Docker</strong></td>
+        <td>Bundle the app and its libraries into an immutable image.</td>
+        <td>Same artifact runs on your Mac, in CI, and in prod.</td>
+      </tr>
+      <tr>
+        <td><strong>Argo CD</strong></td>
+        <td>A robot that watches Git and makes Kubernetes match it.</td>
+        <td>Manual <code>kubectl apply</code> is now a pull-request review.</td>
+      </tr>
+      <tr>
+        <td><strong>Kubernetes</strong></td>
+        <td>The planet-scale scheduler that keeps those containers healthy.</td>
+        <td>Auto-heals, scales, and rolls out with zero downtime.</td>
+      </tr>
+      <tr>
+        <td><strong>DSPy</strong></td>
+        <td>Prompt-engineering as typed, testable code.</td>
+        <td>Turns LLM prompts into reproducible pipelines.</td>
+      </tr>
+      <tr>
+        <td><strong>OPA / Kyverno</strong></td>
+        <td>Policy-as-code gatekeepers for every API call.</td>
+        <td>Blocks <code>:latest</code> images or unencrypted buckets before they deploy.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
   <p>Table: A Declarative Software Stack</p>
   <!-- IMAGE 1 -->
   <figure>
