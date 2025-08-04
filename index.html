@@ -295,7 +295,7 @@
 
 
       <li>
-            <details open>
+        <details open>
         <summary><strong>Code</strong></summary>
         <p>
         <ul>
@@ -303,17 +303,20 @@
           <li>Add a DSPy pipeline to pre-aggregate stats.</li>
           <li>Commit everything to git.</li>
         </ul>
-            </p>
-    </details>
-        
+        </p>
+        </details>
       </li>
       <li>
-        <strong>CI Gate</strong>
+        <details open>
+        <summary><strong>CI Gate</strong></summary>
+        <p>
         <ul>
           <li>Nix builds the Docker image (bit-for-bit reproducible).</li>
           <li>Terraform dry-run shows a new Redis cache.</li>
           <li>Tests pass → image is signed & pushed.</li>
         </ul>
+        </p>
+        </details>
       </li>
       <li>
         <strong>GitOps Sync</strong>
