@@ -71,3 +71,49 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Highlight.js is not loaded.");
   }
 });
+
+  let contextMenu;
+  let selectedElement;
+
+  document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+    selectedElement = event.target;
+    contextMenu = document.getElementById('customContextMenu');
+    contextMenu.style.display = 'block';
+    contextMenu.style.left = event.pageX + 'px';
+    contextMenu.style.top = event.pageY + 'px';
+  });
+
+  document.addEventListener('click', function() {
+    contextMenu.style.display = 'none';
+  });
+
+  function copyText() {
+    if (selectedElement.tagName === 'P' || selectedElement.tagName === 'PRE') {
+      navigator.clipboard.writeText(selectedElement.textContent);
+    }
+  }
+
+  function openLinkNewTab() {
+    if (selectedElement.tagName === 'A') {
+      window.open(selectedElement.href, '_blank');
+    }
+  }
+
+  function downloadAsset() {
+    if (selectedElement.tagName === 'A' && selectedElement.download) {
+      selectedElement.click();
+    }
+  }
+
+  function copyURL() {
+    if (selectedElement.tagName === 'A') {
+      navigator.clipboard.writeText(selectedElement.href);
+    }
+  }
+
+  function viewImage() {
+    if (selectedElement.tagName === 'IMG') {
+      window.open(selectedElement.src, '_blank');
+    }
+  }
